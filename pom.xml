@@ -17,5 +17,13 @@
           <version>1.18.24</version>
           <scope>provided</scope>
       </dependency>
+      
+      <dependency>
+          <groupId>br.edu.cs.poo</groupId>
+          <artifactId>PersistenciaObjetos</artifactId>
+          <version>1.0</version>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/libs/PersistenciaObjetos.jar</systemPath>
+      </dependency>
   </dependencies>
 </project>
