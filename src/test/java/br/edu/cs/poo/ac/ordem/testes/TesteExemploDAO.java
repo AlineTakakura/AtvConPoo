@@ -108,4 +108,4 @@ public class TesteExemploDAO extends TesteAbstrato {
 		Assertions.assertEquals(3, obterQuantidadeRegistros());
 		Assertions.assertEquals(3, ret.length);
 	}	
-}s
+}

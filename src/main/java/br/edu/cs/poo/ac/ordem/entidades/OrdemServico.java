@@ -1,19 +1,19 @@
 package br.edu.cs.poo.ac.ordem.entidades;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.awt.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-@AllArgsConstructor
+import lombok.Getter;
+import lombok.Setter;
+import lombok.AllArgsConstructor;
+
 @Getter
 @Setter
-public class OrdemServico {
-
-    private Cliente cliente;
+@AllArgsConstructor 
+public class OrdemServico implements Serializable{
+	private Cliente cliente;
     private PrecoBase precoBase;
     private Notebook notebook;
     private Desktop desktop;
@@ -26,26 +26,23 @@ public class OrdemServico {
     }
 
     public String getNumero() {
-        String tipoEquipamento = null;
-
+        String tipoEquipamento;
         if (notebook != null) {
             tipoEquipamento = notebook.getIdTipo();
         } else if (desktop != null) {
             tipoEquipamento = desktop.getIdTipo();
+        } else {
+            tipoEquipamento = "XX";
         }
-
-        int ano = dataHoraAbertura.getYear();
-        int mes = dataHoraAbertura.getMonthValue();
-        int dia = dataHoraAbertura.getDayOfMonth();
-        int hora = dataHoraAbertura.getHour();
-        int minuto = dataHoraAbertura.getMinute();
 
         String cpfCnpj = cliente.getCpfCnpj();
 
-        if (cpfCnpj.length() == 14) {
-            return tipoEquipamento + ano + mes + dia + hora + minuto + cpfCnpj;
-        } else {
-            return mes + "" + ano + dia + hora + minuto + "000" + cpfCnpj;
+        if (cpfCnpj != null && cpfCnpj.replaceAll("[^0-9]", "").length() > 11) {
+            String dataHoraFormatada = dataHoraAbertura.format(DateTimeFormatter.ofPattern("yyMMddHHmm"));
+            return tipoEquipamento + dataHoraFormatada + cpfCnpj;
         }
+
+        String dataHoraFormatadaCPF = dataHoraAbertura.format(DateTimeFormatter.ofPattern("MMYYddHHmm"));
+        return dataHoraFormatadaCPF + "000" + cpfCnpj;
     }
 }
