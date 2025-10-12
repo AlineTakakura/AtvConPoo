@@ -35,7 +35,6 @@ public class ClienteMediator {
 
 	public ResultadoMediator validar(Cliente cliente) {
 		ListaString erros = new ListaString();
-        boolean validado = true;
 
         if (cliente == null) {
             erros.adicionar(CLIENTE_NAO_INFORMADO);
@@ -45,7 +44,6 @@ public class ClienteMediator {
         String cpfCnpj = cliente.getCpfCnpj();
         if (StringUtils.estaVazia(cpfCnpj)) {
             erros.adicionar(CPF_CNPJ_NAO_INFORMADO);
-            validado = false;
         } else {
             ResultadoValidacaoCPFCNPJ resCpfCnpj = ValidadorCPFCNPJ.validarCPFCNPJ(cpfCnpj);
             if (resCpfCnpj.getErroValidacao() != null) {
@@ -60,23 +58,19 @@ public class ClienteMediator {
                         erros.adicionar("Erro de validação de CPF/CNPJ desconhecido");
                         break;
                 }
-                validado = false;
             }
         }
 
         String nome = cliente.getNome();
         if (StringUtils.estaVazia(nome)) {
             erros.adicionar(NOME_NAO_INFORMADO);
-            validado = false;
         } else if (StringUtils.tamanhoExcedido(nome, TAMANHO_MAX_NOME)) {
             erros.adicionar("Nome tem mais de " + TAMANHO_MAX_NOME + " caracteres");
-            validado = false;
         }
 
         Contato contato = cliente.getContato();
         if (contato == null) {
             erros.adicionar(CONTATO_NAO_INFORMADO);
-            validado = false;
         } else {
             String email = contato.getEmail();
             String celular = contato.getCelular();
@@ -85,21 +79,17 @@ public class ClienteMediator {
             
             if (emailVazio && celularVazio) {
                 erros.adicionar("Celular e e-mail não foram informados");
-                validado = false;
             } else {
                 if (!emailVazio && !StringUtils.emailValido(email)) {
                     erros.adicionar("E-mail está em um formato inválido");
-                    validado = false;
                 }
 
                 if (!celularVazio && !StringUtils.telefoneValido(celular)) {
                     erros.adicionar("Celular está em um formato inválido");
-                    validado = false;
                 }
                 
                 if (celularVazio && contato.isEhZap()) {
                     erros.adicionar("Celular não informado e indicador de zap ativo");
-                    validado = false;
                 }
             }
         }
@@ -107,13 +97,11 @@ public class ClienteMediator {
         LocalDate dataCadastro = cliente.getDataCadastro();
         if (dataCadastro == null) {
             erros.adicionar(DATA_DO_CADASTRO_NAO_INFORMADA);
-            validado = false;
         } else if (dataCadastro.isAfter(LocalDate.now())) {
             erros.adicionar("Data do cadastro não pode ser posterior à data atual");
-            validado = false;
         }
 
-		return new ResultadoMediator(validado, false, erros);
+        return new ResultadoMediator(erros.tamanho() == 0, false, erros); 
 	}
 
 	public ResultadoMediator incluir(Cliente cliente) {

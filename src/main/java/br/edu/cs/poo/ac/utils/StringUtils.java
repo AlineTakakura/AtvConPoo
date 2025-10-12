@@ -21,9 +21,19 @@ public class StringUtils{
         if(str==null){
         	return tamanho> 0;
         }
-        return str.length()>tamanho;
+        return str.trim().length()>tamanho;
     }
 
+    public static boolean tamanhoMenor(String str, int tamanho) {
+        if (tamanho <= 0) {
+            return false;
+        }
+        if (str == null) {
+            return true;
+        }
+        return str.trim().length() < tamanho;
+    }
+    
     public static boolean emailValido(String email) {
         if(estaVazia(email)) {
         	return false;
