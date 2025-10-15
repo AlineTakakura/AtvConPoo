@@ -1,454 +1,423 @@
 package br.edu.cs.poo.ac.gui;
 
-import java.math.BigDecimal;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.*;
+import java.awt.Color;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ItemEvent;
+import java.beans.Beans;
+import java.lang.reflect.Method;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JSeparator;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JScrollPane;
+import javax.swing.JRadioButton;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.text.NumberFormatter;
+
 import br.edu.cs.poo.ac.ordem.entidades.Desktop;
 import br.edu.cs.poo.ac.ordem.entidades.Equipamento;
 import br.edu.cs.poo.ac.ordem.entidades.Notebook;
 import br.edu.cs.poo.ac.ordem.mediators.EquipamentoMediator;
 import br.edu.cs.poo.ac.ordem.mediators.ResultadoMediator;
-import br.edu.cs.poo.ac.utils.ListaString;
-import br.edu.cs.poo.ac.utils.StringUtils;
 
-public class TelaEquipamento {
+public class TelaEquipamento extends JFrame {
 
-    private static final int ID_TIPO_NOTEBOOK = 1;
-    private static final int ID_TIPO_DESKTOP = 2;
+    private static final long serialVersionUID = 1L;
 
-    protected Shell shell;
+    private enum Modo { INICIAL, NOVO, EDICAO }
+
+    private JComboBox<String> cmbTipo; 
+    private JTextField txtSerial;
+    private JTextArea  txtDescricao;
+    private JRadioButton rbNovoSim, rbNovoNao;
+    private JFormattedTextField txtValor;
+
+    private JCheckBox chkDadosSensiveis; 
+    private JCheckBox chkEhServidor;     
+
+
+    private JButton btnNovo, btnBuscar, btnAdicionar, btnAlterar, btnExcluir, btnCancelar, btnLimpar;
+
     private final EquipamentoMediator mediator = EquipamentoMediator.getInstancia();
 
-    private Combo comboTipo;
-    private Text txtSerial;
-    private Text txtDescricao;
-    private Button rbNovoNao, rbNovoSim;
-    private Text txtValorEstimado;
-    private Group grpNotebook;
-    private Button rbCarregaNao, rbCarregaSim;
-    private Group grpDesktop;
-    private Button rbServidorNao, rbServidorSim;
-    private Button btnNovo, btnBuscar, btnIncluirAlterar, btnExcluir, btnCancelar, btnLimpar;
-
     public static void main(String[] args) {
-        try {
-            TelaEquipamento w = new TelaEquipamento();
-            w.open();
-        } catch (Exception e) {
-            e.printStackTrace();
+        EventQueue.invokeLater(() -> {
+            try {
+                if (!Beans.isDesignTime()) {
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                }
+                TelaEquipamento t = new TelaEquipamento();
+                t.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public TelaEquipamento() {
+        if (!Beans.isDesignTime()) {
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                SwingUtilities.updateComponentTreeUI(this);
+            } catch (Exception ignore) {}
+        }
+
+        setTitle("Registrar Equipamento");
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setSize(700, 420);
+        setLocationRelativeTo(null);
+        getContentPane().setLayout(null);
+        getContentPane().setBackground(Color.WHITE);
+
+        JLabel lblGeral = new JLabel("Geral:");
+        lblGeral.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        lblGeral.setBounds(20, 10, 70, 23);
+        getContentPane().add(lblGeral);
+
+        JLabel lblEspecifico = new JLabel("Específico:");
+        lblEspecifico.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        lblEspecifico.setBounds(20, 210, 80, 23);
+        getContentPane().add(lblEspecifico);
+
+        JLabel lblTipo = new JLabel("Tipo");
+        lblTipo.setBounds(20, 41, 80, 17);
+        getContentPane().add(lblTipo);
+
+        cmbTipo = new JComboBox<>(new String[] { "Notebook", "Desktop" });
+        cmbTipo.setBounds(20, 64, 150, 22);
+        getContentPane().add(cmbTipo);
+
+        JLabel lblSerial = new JLabel("Serial");
+        lblSerial.setBounds(190, 41, 80, 17);
+        getContentPane().add(lblSerial);
+
+        txtSerial = new JTextField();
+        txtSerial.setToolTipText("Digite o serial (ID do equipamento)");
+        txtSerial.setBounds(190, 64, 200, 22);
+        getContentPane().add(txtSerial);
+
+        Font fBtn = new Font(Font.SANS_SERIF, Font.BOLD, 12);
+
+        btnNovo = new JButton("NOVO");
+        btnNovo.setFont(fBtn);
+        btnNovo.setBounds(410, 60, 95, 30);
+        getContentPane().add(btnNovo);
+
+        btnBuscar = new JButton("BUSCAR");
+        btnBuscar.setFont(fBtn);
+        btnBuscar.setBounds(515, 60, 105, 30);
+        getContentPane().add(btnBuscar);
+
+        JSeparator sep1 = new JSeparator();
+        sep1.setBounds(10, 100, 660, 2);
+        getContentPane().add(sep1);
+
+        JLabel lblDesc = new JLabel("Descrição");
+        lblDesc.setBounds(20, 110, 100, 17);
+        getContentPane().add(lblDesc);
+
+        txtDescricao = new JTextArea();
+        txtDescricao.setToolTipText("Descreva o equipamento");
+        JScrollPane spDesc = new JScrollPane(txtDescricao);
+        spDesc.setBounds(20, 132, 420, 60);
+        getContentPane().add(spDesc);
+
+        JLabel lblNovo = new JLabel("É novo?");
+        lblNovo.setBounds(460, 110, 60, 17);
+        getContentPane().add(lblNovo);
+
+        rbNovoNao = new JRadioButton("Não");
+        rbNovoSim = new JRadioButton("Sim");
+        rbNovoNao.setSelected(true);
+        ButtonGroup bgNovo = new ButtonGroup();
+        bgNovo.add(rbNovoNao);
+        bgNovo.add(rbNovoSim);
+        rbNovoNao.setBackground(Color.WHITE);
+        rbNovoSim.setBackground(Color.WHITE);
+        rbNovoNao.setBounds(460, 132, 60, 21);
+        rbNovoSim.setBounds(520, 132, 60, 21);
+        getContentPane().add(rbNovoNao);
+        getContentPane().add(rbNovoSim);
+
+        JLabel lblValor = new JLabel("Valor estimado");
+        lblValor.setBounds(460, 160, 120, 17);
+        getContentPane().add(lblValor);
+
+        NumberFormat nf = new DecimalFormat("#,##0.00");
+        NumberFormatter nff = new NumberFormatter(nf);
+        nff.setValueClass(Double.class);
+        nff.setAllowsInvalid(false);
+        txtValor = new JFormattedTextField(nff);
+        txtValor.setValue(0.0);
+        txtValor.setBounds(460, 182, 160, 22);
+        getContentPane().add(txtValor);
+
+        chkDadosSensiveis = new JCheckBox("Carrega dados sensíveis? (Notebook)");
+        chkDadosSensiveis.setBackground(Color.WHITE);
+        chkDadosSensiveis.setBounds(20, 240, 300, 22);
+        getContentPane().add(chkDadosSensiveis);
+
+        chkEhServidor = new JCheckBox("É servidor? (Desktop)");
+        chkEhServidor.setBackground(Color.WHITE);
+        chkEhServidor.setBounds(340, 240, 200, 22);
+        getContentPane().add(chkEhServidor);
+
+        btnAdicionar = new JButton("ADICIONAR");
+        btnAdicionar.setFont(fBtn);
+        btnAdicionar.setBounds(20, 300, 120, 30);
+        getContentPane().add(btnAdicionar);
+
+        btnAlterar = new JButton("ALTERAR");
+        btnAlterar.setFont(fBtn);
+        btnAlterar.setBounds(145, 300, 100, 30);
+        getContentPane().add(btnAlterar);
+
+        btnExcluir = new JButton("EXCLUIR");
+        btnExcluir.setFont(fBtn);
+        btnExcluir.setBounds(250, 300, 95, 30);
+        getContentPane().add(btnExcluir);
+
+        btnCancelar = new JButton("CANCELAR");
+        btnCancelar.setFont(fBtn);
+        btnCancelar.setBounds(350, 300, 110, 30);
+        getContentPane().add(btnCancelar);
+
+        btnLimpar = new JButton("LIMPAR");
+        btnLimpar.setFont(fBtn);
+        btnLimpar.setBounds(465, 300, 100, 30);
+        getContentPane().add(btnLimpar);
+
+        setModo(Modo.INICIAL);
+
+        cmbTipo.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) ajustarCamposEspecificos();
+        });
+
+        btnNovo.addActionListener(e -> {
+            String serial = txtSerial.getText().trim();
+            if (serial.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Serial deve ser preenchido!");
+                return;
+            }
+            String id = getIdEquipamento();
+            Equipamento existente = isNotebook() ? mediator.buscarNotebook(id) : mediator.buscarDesktop(id);
+            if (existente != null) {
+                JOptionPane.showMessageDialog(this, "Equipamento já existente!");
+                return;
+            }
+            limparDados(false);
+            setModo(Modo.NOVO);
+        });
+
+        btnBuscar.addActionListener(e -> {
+            if (Beans.isDesignTime()) return;
+            String serial = txtSerial.getText().trim();
+            if (serial.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Serial deve ser preenchido!");
+                return;
+            }
+            String id = getIdEquipamento();
+            Equipamento eq = isNotebook() ? mediator.buscarNotebook(id) : mediator.buscarDesktop(id);
+            if (eq == null) {
+                JOptionPane.showMessageDialog(this, "Nenhum equipamento encontrado.", "Resultado da Busca", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            preencherTela(eq);
+            setModo(Modo.EDICAO);
+        });
+
+        btnAdicionar.addActionListener(e -> {
+            try {
+                ResultadoMediator r = isNotebook()
+                        ? mediator.incluirNotebook(construirNotebook())
+                        : mediator.incluirDesktop(construirDesktop());
+
+                if (!r.isOperacaoRealizada()) {
+                    String s = "Operação não realizada pois:";
+                    for (String m : r.getMensagensErro().listar()) s += "\n" + m;
+                    JOptionPane.showMessageDialog(this, s, "Resultado da Inclusão", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Equipamento cadastrado com sucesso!", "Resultado da Inclusão", JOptionPane.INFORMATION_MESSAGE);
+                    setModo(Modo.INICIAL);
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Dados inválidos. Verifique os campos.", "Atenção", JOptionPane.WARNING_MESSAGE);
+            }
+        });
+
+        btnAlterar.addActionListener(e -> {
+            try {
+                ResultadoMediator r = isNotebook()
+                        ? mediator.alterarNotebook(construirNotebook())
+                        : mediator.alterarDesktop(construirDesktop());
+
+                if (!r.isOperacaoRealizada()) {
+                    String s = "Operação não realizada pois:";
+                    for (String m : r.getMensagensErro().listar()) s += "\n" + m;
+                    JOptionPane.showMessageDialog(this, s, "Resultado da Alteração", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Cadastro alterado com sucesso!", "Resultado da Alteração", JOptionPane.INFORMATION_MESSAGE);
+                    setModo(Modo.INICIAL);
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Dados inválidos. Verifique os campos.", "Atenção", JOptionPane.WARNING_MESSAGE);
+            }
+        });
+
+        btnExcluir.addActionListener(e -> {
+            String serial = txtSerial.getText().trim();
+            if (serial.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Informe o Serial para excluir.", "Atenção", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            String id = getIdEquipamento();
+            ResultadoMediator r = isNotebook() ? mediator.excluirNotebook(id) : mediator.excluirDesktop(id);
+
+            if (!r.isOperacaoRealizada()) {
+                String s = "Operação não realizada pois:";
+                for (String m : r.getMensagensErro().listar()) s += "\n" + m;
+                JOptionPane.showMessageDialog(this, s, "Resultado da Exclusão", JOptionPane.WARNING_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Exclusão realizada com sucesso!", "Resultado da Exclusão", JOptionPane.INFORMATION_MESSAGE);
+                setModo(Modo.INICIAL);
+            }
+        });
+
+        btnCancelar.addActionListener(e -> setModo(Modo.INICIAL));
+
+        btnLimpar.addActionListener(e -> {
+            if (txtSerial.isEnabled()) txtSerial.setText("");
+            limparDados(true);
+        });
+
+        ajustarCamposEspecificos();
+    }
+
+    private void setModo(Modo m) {
+        boolean inicial = m == Modo.INICIAL;
+        boolean novo    = m == Modo.NOVO;
+        boolean edicao  = m == Modo.EDICAO;
+        cmbTipo.setEnabled(inicial);
+        txtSerial.setEnabled(inicial);
+
+        txtDescricao.setEnabled(novo || edicao);
+        rbNovoSim.setEnabled(novo || edicao);
+        rbNovoNao.setEnabled(novo || edicao);
+        txtValor.setEnabled(novo || edicao);
+        chkDadosSensiveis.setEnabled(novo || edicao);
+        chkEhServidor.setEnabled(novo || edicao);
+
+        btnNovo.setEnabled(inicial);
+        btnBuscar.setEnabled(inicial);
+
+        btnAdicionar.setEnabled(novo);
+        btnAlterar.setEnabled(edicao);
+        btnExcluir.setEnabled(edicao);
+        btnCancelar.setEnabled(!inicial);
+        btnLimpar.setEnabled(true);
+
+        if (inicial) {
+            txtSerial.setText("");
+            limparDados(true);
         }
     }
 
-    public void open() {
-        Display display = Display.getDefault();
-        createContents();
-        shell.open();
-        shell.layout();
-        while (!shell.isDisposed()) {
-            if (!display.readAndDispatch()) display.sleep();
-        }
-        display.dispose();
-    }
-
-    private void createContents() {
-        shell = new Shell();
-        shell.setSize(720, 520);
-        shell.setText("Cadastro de Equipamento (Notebook / Desktop)");
-
-        Label lblTipo = new Label(shell, SWT.NONE);
-        lblTipo.setBounds(30, 30, 70, 22);
-        lblTipo.setText("Tipo");
-
-        comboTipo = new Combo(shell, SWT.DROP_DOWN | SWT.READ_ONLY);
-        comboTipo.setBounds(110, 28, 150, 28);
-        comboTipo.setItems(new String[] { "Notebook", "Desktop" });
-        comboTipo.select(0);
-
-        Label lblSerial = new Label(shell, SWT.NONE);
-        lblSerial.setBounds(300, 30, 60, 22);
-        lblSerial.setText("Serial");
-
-        txtSerial = new Text(shell, SWT.BORDER);
-        txtSerial.setBounds(360, 28, 180, 28);
-
-        btnNovo = new Button(shell, SWT.PUSH);
-        btnNovo.setBounds(560, 28, 60, 28);
-        btnNovo.setText("Novo");
-
-        btnBuscar = new Button(shell, SWT.PUSH);
-        btnBuscar.setBounds(630, 28, 60, 28);
-        btnBuscar.setText("Buscar");
-
-        Label lblDescricao = new Label(shell, SWT.NONE);
-        lblDescricao.setBounds(30, 90, 100, 22);
-        lblDescricao.setText("Descrição");
-
-        txtDescricao = new Text(shell, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-        txtDescricao.setBounds(110, 90, 580, 80);
-        txtDescricao.setEnabled(false);
-
-        Label lblENovo = new Label(shell, SWT.NONE);
-        lblENovo.setBounds(30, 190, 60, 22);
-        lblENovo.setText("É novo");
-
-        rbNovoNao = new Button(shell, SWT.RADIO);
-        rbNovoNao.setBounds(110, 190, 60, 22);
-        rbNovoNao.setText("NÃO");
-        rbNovoNao.setSelection(true);
-        rbNovoNao.setEnabled(false);
-
-        rbNovoSim = new Button(shell, SWT.RADIO);
-        rbNovoSim.setBounds(180, 190, 60, 22);
-        rbNovoSim.setText("SIM");
-        rbNovoSim.setEnabled(false);
-
-        Label lblValor = new Label(shell, SWT.NONE);
-        lblValor.setBounds(260, 190, 100, 22);
-        lblValor.setText("Valor estimado");
-
-        txtValorEstimado = new Text(shell, SWT.BORDER);
-        txtValorEstimado.setBounds(360, 188, 140, 28);
-        txtValorEstimado.setToolTipText("Use vírgula para decimal (ex.: 1234,56)");
-        txtValorEstimado.setEnabled(false);
-        txtValorEstimado.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusLost(FocusEvent e) {
-                String s = somenteNumeroVirgula(txtValorEstimado.getText());
-                txtValorEstimado.setText(s);
-            }
-        });
-
-        grpNotebook = new Group(shell, SWT.NONE);
-        grpNotebook.setText("Notebook");
-        grpNotebook.setBounds(30, 240, 300, 70);
-        grpNotebook.setEnabled(false);
-
-        Label lblCarrega = new Label(grpNotebook, SWT.NONE);
-        lblCarrega.setBounds(10, 30, 160, 22);
-        lblCarrega.setText("Carrega dados sensíveis");
-
-        rbCarregaNao = new Button(grpNotebook, SWT.RADIO);
-        rbCarregaNao.setBounds(180, 30, 50, 22);
-        rbCarregaNao.setText("NÃO");
-        rbCarregaNao.setSelection(true);
-
-        rbCarregaSim = new Button(grpNotebook, SWT.RADIO);
-        rbCarregaSim.setBounds(240, 30, 50, 22);
-        rbCarregaSim.setText("SIM");
-
-        grpDesktop = new Group(shell, SWT.NONE);
-        grpDesktop.setText("Desktop");
-        grpDesktop.setBounds(360, 240, 330, 70);
-        grpDesktop.setEnabled(false);
-
-        Label lblServidor = new Label(grpDesktop, SWT.NONE);
-        lblServidor.setBounds(10, 30, 90, 22);
-        lblServidor.setText("É Servidor");
-
-        rbServidorNao = new Button(grpDesktop, SWT.RADIO);
-        rbServidorNao.setBounds(110, 30, 50, 22);
-        rbServidorNao.setText("NÃO");
-        rbServidorNao.setSelection(true);
-
-        rbServidorSim = new Button(grpDesktop, SWT.RADIO);
-        rbServidorSim.setBounds(170, 30, 50, 22);
-        rbServidorSim.setText("SIM");
-
-        btnIncluirAlterar = new Button(shell, SWT.PUSH);
-        btnIncluirAlterar.setBounds(50, 360, 100, 30);
-        btnIncluirAlterar.setText("Incluir");
-        btnIncluirAlterar.setEnabled(false);
-
-        btnExcluir = new Button(shell, SWT.PUSH);
-        btnExcluir.setBounds(170, 360, 100, 30);
-        btnExcluir.setText("Excluir");
-        btnExcluir.setEnabled(false);
-
-        btnCancelar = new Button(shell, SWT.PUSH);
-        btnCancelar.setBounds(290, 360, 100, 30);
-        btnCancelar.setText("Cancelar");
-        btnCancelar.setEnabled(false);
-
-        btnLimpar = new Button(shell, SWT.PUSH);
-        btnLimpar.setBounds(410, 360, 100, 30);
-        btnLimpar.setText("Limpar");
-
-        configurarListeners();
-        aplicarVisibilidadeExtras();
-    }
-
-    private void configurarListeners() {
-
-        comboTipo.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                aplicarVisibilidadeExtras();
-            }
-        });
-
-        btnLimpar.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                if (txtSerial.getEnabled()) txtSerial.setText("");
-                limparDados();
-            }
-        });
-
-        btnCancelar.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                resetarTela();
-            }
-        });
-
-        btnNovo.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                int idTipo = getIdTipoSelecionado();
-                String serial = txtSerial.getText().trim();
-
-                if (StringUtils.estaVazia(serial)) {
-                    msg("Serial deve ser preenchido!", SWT.ICON_WARNING);
-                    txtSerial.setFocus();
-                    return;
-                }
-
-                Equipamento achado = mediator.buscar(idTipo, serial);
-                if (achado != null) {
-                    msg("Equipamento já existente!", SWT.ICON_WARNING);
-                    return;
-                }
-
-                limparDados();
-                btnIncluirAlterar.setText("Incluir");
-                setModoEdicao(true);
-            }
-        });
-
-        btnBuscar.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                int idTipo = getIdTipoSelecionado();
-                String serial = txtSerial.getText().trim();
-
-                if (StringUtils.estaVazia(serial)) {
-                    msg("Serial deve ser preenchido!", SWT.ICON_WARNING);
-                    txtSerial.setFocus();
-                    return;
-                }
-
-                Equipamento eq = mediator.buscar(idTipo, serial);
-                if (eq == null) {
-                    msg("Equipamento não existente!", SWT.ICON_WARNING);
-                    return;
-                }
-
-                preencherCampos(eq);
-                btnIncluirAlterar.setText("Alterar");
-                setModoEdicao(true);
-                btnExcluir.setEnabled(true);
-            }
-        });
-
-        btnIncluirAlterar.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                String modo = btnIncluirAlterar.getText();
-                Equipamento eq = montarEquipamentoDaTela();
-                if (eq == null) {
-                    msg("Preencha Tipo e Serial corretamente.", SWT.ICON_WARNING);
-                    return;
-                }
-
-                ResultadoMediator resultado;
-                String sucesso;
-
-                if ("Incluir".equals(modo)) {
-                    resultado = mediator.incluir(eq);
-                    sucesso = "Inclusão realizada com sucesso";
-                } else {
-                    resultado = mediator.alterar(eq);
-                    sucesso = "Alteração realizada com sucesso";
-                }
-
-                if (resultado.isOperacaoRealizada()) {
-                    msg(sucesso, SWT.ICON_INFORMATION);
-                    resetarTela();
-                } else if (!resultado.isValidado()) {
-                    exibirErros(resultado.getMensagensErro());
-                } else {
-                    msg(juntarMensagens(resultado.getMensagensErro()), SWT.ICON_ERROR);
-                }
-            }
-        });
-
-        btnExcluir.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                int idTipo = getIdTipoSelecionado();
-                String serial = txtSerial.getText().trim();
-
-                MessageBox box = new MessageBox(shell, SWT.ICON_QUESTION | SWT.YES | SWT.NO);
-                box.setText("Confirmação");
-                box.setMessage("Tem certeza que deseja excluir o equipamento " + serial + "?");
-                if (box.open() != SWT.YES) return;
-
-                ResultadoMediator r = mediator.excluir(idTipo, serial);
-                if (r.isOperacaoRealizada()) {
-                    msg("Exclusão realizada com sucesso", SWT.ICON_INFORMATION);
-                    resetarTela();
-                } else {
-                    msg("Exclusão não pôde ser realizada.\n" + juntarMensagens(r.getMensagensErro()), SWT.ICON_ERROR);
-                }
-            }
-        });
-    }
-
-    private void aplicarVisibilidadeExtras() {
-        boolean isNotebook = (comboTipo.getSelectionIndex() == 0);
-        grpNotebook.setVisible(isNotebook);
-        grpDesktop.setVisible(!isNotebook);
-        boolean habilitar = txtDescricao.getEnabled();
-        grpNotebook.setEnabled(isNotebook && habilitar);
-        grpDesktop.setEnabled(!isNotebook && habilitar);
-    }
-
-    private void setModoEdicao(boolean edicao) {
-        comboTipo.setEnabled(!edicao);
-        txtSerial.setEnabled(!edicao);
-        btnNovo.setEnabled(!edicao);
-        btnBuscar.setEnabled(!edicao);
-        txtDescricao.setEnabled(edicao);
-        rbNovoNao.setEnabled(edicao);
-        rbNovoSim.setEnabled(edicao);
-        txtValorEstimado.setEnabled(edicao);
-        boolean isNotebook = (comboTipo.getSelectionIndex() == 0);
-        grpNotebook.setEnabled(edicao && isNotebook);
-        grpDesktop.setEnabled(edicao && !isNotebook);
-        btnIncluirAlterar.setEnabled(edicao);
-        btnCancelar.setEnabled(edicao);
-        if (!edicao) btnExcluir.setEnabled(false);
-        aplicarVisibilidadeExtras();
-    }
-
-    private void resetarTela() {
-        limparTudo();
-        btnIncluirAlterar.setText("Incluir");
-        setModoEdicao(false);
-    }
-
-    private void limparDados() {
+    private void limparDados(boolean manterTipo) {
+        if (!manterTipo) cmbTipo.setSelectedIndex(0);
         txtDescricao.setText("");
-        rbNovoNao.setSelection(true);
-        rbNovoSim.setSelection(false);
-        txtValorEstimado.setText("");
-        rbCarregaNao.setSelection(true);
-        rbCarregaSim.setSelection(false);
-        rbServidorNao.setSelection(true);
-        rbServidorSim.setSelection(false);
+        rbNovoNao.setSelected(true);
+        txtValor.setValue(0.0);
+        chkDadosSensiveis.setSelected(false);
+        chkEhServidor.setSelected(false);
+        ajustarCamposEspecificos();
     }
 
-    private void limparTudo() {
-        comboTipo.select(0);
-        txtSerial.setText("");
-        limparDados();
-        aplicarVisibilidadeExtras();
+    private void ajustarCamposEspecificos() {
+        boolean note = isNotebook();
+        chkDadosSensiveis.setVisible(note);
+        chkEhServidor.setVisible(!note);
+    }
+    private Notebook construirNotebook() {
+        double valor = (txtValor.getValue() instanceof Number)
+                ? ((Number) txtValor.getValue()).doubleValue() : 0.0;
+
+        return new Notebook(
+                getIdEquipamento(),           
+                txtDescricao.getText(),
+                rbNovoSim.isSelected(),
+                valor,
+                chkDadosSensiveis.isSelected()
+        );
     }
 
-    private void preencherCampos(Equipamento eq) {
+    private Desktop construirDesktop() {
+        double valor = (txtValor.getValue() instanceof Number)
+                ? ((Number) txtValor.getValue()).doubleValue() : 0.0;
+
+        return new Desktop(
+                getIdEquipamento(),         
+                txtDescricao.getText(),
+                rbNovoSim.isSelected(),
+                valor,
+                chkEhServidor.isSelected()
+        );
+    }
+
+    private String getIdEquipamento() {
+        return (isNotebook() ? "NO" : "DE") + txtSerial.getText().trim();
+    }
+
+    private boolean isNotebook() {
+        return "Notebook".equals(cmbTipo.getSelectedItem());
+    }
+
+    private void preencherTela(Equipamento eq) {
+        if (eq instanceof Notebook) cmbTipo.setSelectedItem("Notebook");
+        else cmbTipo.setSelectedItem("Desktop");
+        ajustarCamposEspecificos();
+
+        String desc = tryGetString(eq, "getDescricao");
+        if (desc != null) txtDescricao.setText(desc);
+
+        Boolean ehNovo = tryGetBoolean(eq, "isEhNovo");
+        if (ehNovo != null) {
+            if (ehNovo) rbNovoSim.setSelected(true);
+            else rbNovoNao.setSelected(true);
+        }
+
+        Double valor = tryGetDouble(eq, "getValorEstimado");
+        if (valor != null) txtValor.setValue(valor);
+
         if (eq instanceof Notebook) {
-            comboTipo.select(0);
-            Notebook n = (Notebook) eq;
-            txtSerial.setText(n.getSerial());
-            txtDescricao.setText(n.getDescricao() == null ? "" : n.getDescricao());
-            if (n.isNovo()) rbNovoSim.setSelection(true); else rbNovoNao.setSelection(true);
-            txtValorEstimado.setText(valorToTexto(n.getValorEstimado()));
-            if (n.isCarregaDadosSensiveis()) rbCarregaSim.setSelection(true); else rbCarregaNao.setSelection(true);
+            Boolean sens = tryGetBoolean(eq, "isCarregaDadosSensiveis");
+            chkDadosSensiveis.setSelected(Boolean.TRUE.equals(sens));
         } else if (eq instanceof Desktop) {
-            comboTipo.select(1);
-            Desktop d = (Desktop) eq;
-            txtSerial.setText(d.getSerial());
-            txtDescricao.setText(d.getDescricao() == null ? "" : d.getDescricao());
-            if (d.isNovo()) rbNovoSim.setSelection(true); else rbNovoNao.setSelection(true);
-            txtValorEstimado.setText(valorToTexto(d.getValorEstimado()));
-            if (d.isServidor()) rbServidorSim.setSelection(true); else rbServidorNao.setSelection(true);
-        }
-        aplicarVisibilidadeExtras();
-    }
-
-    private Equipamento montarEquipamentoDaTela() {
-        int idTipo = getIdTipoSelecionado();
-        String serial = txtSerial.getText().trim();
-        String descricao = txtDescricao.getText().trim();
-        boolean ehNovo = rbNovoSim.getSelection();
-        BigDecimal valor = parseValor(txtValorEstimado.getText().trim());
-
-        if (StringUtils.estaVazia(serial)) return null;
-
-        if (idTipo == ID_TIPO_NOTEBOOK) {
-            Notebook n = new Notebook();
-            n.setIdTipo(ID_TIPO_NOTEBOOK);
-            n.setSerial(serial);
-            n.setDescricao(descricao);
-            n.setNovo(ehNovo);
-            n.setValorEstimado(valor);
-            n.setCarregaDadosSensiveis(rbCarregaSim.getSelection());
-            return n;
-        } else {
-            Desktop d = new Desktop();
-            d.setIdTipo(ID_TIPO_DESKTOP);
-            d.setSerial(serial);
-            d.setDescricao(descricao);
-            d.setNovo(ehNovo);
-            d.setValorEstimado(valor);
-            d.setServidor(rbServidorSim.getSelection());
-            return d;
+            Boolean serv = tryGetBoolean(eq, "isEhServidor");
+            chkEhServidor.setSelected(Boolean.TRUE.equals(serv));
         }
     }
-
-    private int getIdTipoSelecionado() {
-        return comboTipo.getSelectionIndex() == 0 ? ID_TIPO_NOTEBOOK : ID_TIPO_DESKTOP;
+    private static String tryGetString(Object o, String method) {
+        try { Method m = o.getClass().getMethod(method); Object r = m.invoke(o); return r != null ? r.toString() : null; }
+        catch (Exception ignore) { return null; }
     }
-
-    private void msg(String mensagem, int tipo) {
-        MessageBox box = new MessageBox(shell, tipo | SWT.OK);
-        box.setText("Aviso");
-        box.setMessage(mensagem);
-        box.open();
+    private static Boolean tryGetBoolean(Object o, String method) {
+        try { Method m = o.getClass().getMethod(method); Object r = m.invoke(o); return (r instanceof Boolean) ? (Boolean) r : null; }
+        catch (Exception ignore) { return null; }
     }
-
-    private void exibirErros(ListaString erros) {
-        msg("Erros de Validação:\n\n" + juntarMensagens(erros), SWT.ICON_ERROR);
-    }
-
-    private String juntarMensagens(ListaString erros) {
-        String[] arr = erros.listar();
-        if (arr == null || arr.length == 0) return "";
-        return String.join("\n", arr);
-    }
-
-    private String somenteNumeroVirgula(String s) {
-        if (s == null) return "";
-        return s.replaceAll("[^0-9,]", "");
-    }
-
-    private BigDecimal parseValor(String texto) {
-        if (StringUtils.estaVazia(texto)) return new BigDecimal("0.00");
-        String norm = texto.replace(".", "").replace(",", ".");
-        try {
-            return new BigDecimal(norm);
-        } catch (Exception e) {
-            return new BigDecimal("0.00");
-        }
-    }
-
-    private String valorToTexto(BigDecimal v) {
-        if (v == null) return "";
-        String s = v.toPlainString();
-        return s.replace(".", ",");
+    private static Double tryGetDouble(Object o, String method) {
+        try { Method m = o.getClass().getMethod(method); Object r = m.invoke(o); return (r instanceof Number) ? ((Number) r).doubleValue() : null; }
+        catch (Exception ignore) { return null; }
     }
 }

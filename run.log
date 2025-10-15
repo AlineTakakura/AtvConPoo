@@ -1,0 +1,2 @@
+Erro: Não foi possível localizar nem carregar a classe principal br.edu.cs.poo.ac.gui.TelaCliente
+Causada por: java.lang.ClassNotFoundException: br.edu.cs.poo.ac.gui.TelaCliente
