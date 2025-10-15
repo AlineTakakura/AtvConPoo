@@ -10,20 +10,35 @@
       <maven.compiler.target>17</maven.compiler.target>
   </properties>
 
-  <dependencies>
-      <dependency>
-          <groupId>org.projectlombok</groupId>
-          <artifactId>lombok</artifactId>
-          <version>1.18.24</version>
-          <scope>provided</scope>
-      </dependency>
-      
-      <dependency>
-          <groupId>br.edu.cs.poo</groupId>
-          <artifactId>PersistenciaObjetos</artifactId>
-          <version>1.0</version>
-          <scope>system</scope>
-          <systemPath>${project.basedir}/libs/PersistenciaObjetos.jar</systemPath>
-      </dependency>
-  </dependencies>
+<dependencies>
+    <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>1.18.24</version>
+        <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+        <groupId>br.edu.cs.poo</groupId>
+        <artifactId>PersistenciaObjetos</artifactId>
+        <version>1.0</version>
+        <scope>system</scope>
+        <systemPath>${project.basedir}/libs/PersistenciaObjetos.jar</systemPath>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>5.10.1</version>
+        <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>5.10.1</version>
+        <scope>test</scope>
+    </dependency>
+    
+</dependencies>
 </project>

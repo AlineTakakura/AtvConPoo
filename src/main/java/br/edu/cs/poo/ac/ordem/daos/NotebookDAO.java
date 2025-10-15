@@ -9,13 +9,14 @@ public class NotebookDAO extends DAOGenerico {
 		super(Notebook.class);
 	}
     
-	public Notebook buscar(String serial) {
-		return (Notebook)cadastroObjetos.buscar(serial);		
+	public Notebook buscar(String idTipoSerial) {
+		return (Notebook)cadastroObjetos.buscar(idTipoSerial);		
 	}
     
 	public boolean incluir(Notebook notebook) {
-		if (buscar(notebook.getSerial()) == null) {
-			cadastroObjetos.incluir(notebook, notebook.getSerial());
+        String idCompleto = notebook.getIdTipo() + notebook.getSerial();
+		if (buscar(idCompleto) == null) {
+			cadastroObjetos.incluir(notebook, idCompleto);
 			return true;
 		} else {
 			return false;
@@ -23,17 +24,18 @@ public class NotebookDAO extends DAOGenerico {
 	}
     
 	public boolean alterar(Notebook notebook) {
-		if (buscar(notebook.getSerial()) != null) {
-			cadastroObjetos.alterar(notebook, notebook.getSerial());
+        String idCompleto = notebook.getIdTipo() + notebook.getSerial();
+		if (buscar(idCompleto) != null) {
+			cadastroObjetos.alterar(notebook, idCompleto);
 			return true;
 		} else {
 			return false;
 		}
 	}
     
-	public boolean excluir(String serial) {
-		if (buscar(serial) != null) {
-			cadastroObjetos.excluir(serial);
+	public boolean excluir(String idTipoSerial) {
+		if (buscar(idTipoSerial) != null) {
+			cadastroObjetos.excluir(idTipoSerial);
 			return true;
 		} else {
 			return false;

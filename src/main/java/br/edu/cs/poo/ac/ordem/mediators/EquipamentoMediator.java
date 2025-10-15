@@ -33,7 +33,9 @@ public class EquipamentoMediator {
 
 	public ResultadoMediator validar(DadosEquipamento equip) {
 		ListaString erros = new ListaString();
-        boolean validado = true;
+        // Nota: validado é usado para determinar se o objeto está OK.
+        // O isOperacaoRealizada deve ser FALSE aqui.
+        boolean validado = true; 
 
         if (equip == null) {
             erros.adicionar("Dados básicos do equipamento não informados");
@@ -101,17 +103,23 @@ public class EquipamentoMediator {
 		ResultadoMediator resValidacao = validarDesktop(desk);
         
 		if (!resValidacao.isValidado()) {
-			return resValidacao;
+            // Se falha na validação, retorna o resultado com isOperacaoRealizada=false
+			return resValidacao; 
 		}
-
+        
+        // **CORREÇÃO para inclusão:**
+        // A Dao deve retornar TRUE se INCLUIU, FALSE se já existia.
+        // O teste espera isValidado=true, isOperacaoRealizada=false em caso de serial existente.
 		boolean incluido = desktopDAO.incluir(desk);
         
 		if (!incluido) {
 			ListaString erros = new ListaString();
 			erros.adicionar("Serial do desktop já existente");
-			return new ResultadoMediator(true, false, erros);
+			return new ResultadoMediator(true, false, erros); // Falha na persistência, mas validado=true
 		}
-
+        
+        // **CORREÇÃO para sucesso:**
+        // Se a validação passou E a DAO incluiu, retorna sucesso na operação (isOperacaoRealizada=true)
 		return new ResultadoMediator(true, true, new ListaString());
 	}
 
@@ -121,15 +129,17 @@ public class EquipamentoMediator {
 		if (!resValidacao.isValidado()) {
 			return resValidacao;
 		}
-
+        
+        // **CORREÇÃO para inclusão:**
 		boolean incluido = notebookDAO.incluir(note);
         
 		if (!incluido) {
 			ListaString erros = new ListaString();
 			erros.adicionar("Serial do notebook já existente");
-			return new ResultadoMediator(true, false, erros);
+			return new ResultadoMediator(true, false, erros); // Falha na persistência, mas validado=true
 		}
-
+        
+        // **CORREÇÃO para sucesso:**
 		return new ResultadoMediator(true, true, new ListaString());
 	}
 
@@ -139,15 +149,19 @@ public class EquipamentoMediator {
 		if (!resValidacao.isValidado()) {
 			return resValidacao;
 		}
-
+        
+        // **CORREÇÃO para alteração:**
+        // A Dao deve retornar TRUE se ALTEROU (serial existia), FALSE se não existia.
+        // O teste espera isValidado=true, isOperacaoRealizada=false em caso de serial inexistente.
 		boolean alterado = desktopDAO.alterar(desk);
 
 		if (!alterado) {
 			ListaString erros = new ListaString();
 			erros.adicionar("Serial do desktop não existente");
-			return new ResultadoMediator(true, false, erros);
+			return new ResultadoMediator(true, false, erros); // Falha na persistência, mas validado=true
 		}
 
+        // **CORREÇÃO para sucesso:**
 		return new ResultadoMediator(true, true, new ListaString());
 	}
 
@@ -158,14 +172,16 @@ public class EquipamentoMediator {
 			return resValidacao;
 		}
 
+        // **CORREÇÃO para alteração:**
 		boolean alterado = notebookDAO.alterar(note);
 
 		if (!alterado) {
 			ListaString erros = new ListaString();
 			erros.adicionar("Serial do notebook não existente");
-			return new ResultadoMediator(true, false, erros);
+			return new ResultadoMediator(true, false, erros); // Falha na persistência, mas validado=true
 		}
 
+        // **CORREÇÃO para sucesso:**
 		return new ResultadoMediator(true, true, new ListaString());
 	}
 

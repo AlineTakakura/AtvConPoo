@@ -36,13 +36,12 @@ public class OrdemServico implements Serializable{
         }
 
         String cpfCnpj = cliente.getCpfCnpj();
+        String dataHoraFormatada = dataHoraAbertura.format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
 
         if (cpfCnpj != null && cpfCnpj.replaceAll("[^0-9]", "").length() > 11) {
-            String dataHoraFormatada = dataHoraAbertura.format(DateTimeFormatter.ofPattern("yyMMddHHmm"));
-            return tipoEquipamento + dataHoraFormatada + cpfCnpj;
+            return tipoEquipamento + dataHoraFormatada + cpfCnpj; 
         }
 
-        String dataHoraFormatadaCPF = dataHoraAbertura.format(DateTimeFormatter.ofPattern("MMYYddHHmm"));
-        return dataHoraFormatadaCPF + "000" + cpfCnpj;
+        return tipoEquipamento + dataHoraFormatada + "000" + cpfCnpj;
     }
 }

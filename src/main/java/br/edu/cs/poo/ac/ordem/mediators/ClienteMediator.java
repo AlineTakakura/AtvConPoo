@@ -40,7 +40,6 @@ public class ClienteMediator {
             erros.adicionar(CLIENTE_NAO_INFORMADO);
             return new ResultadoMediator(false, false, erros);
         }
-
         String cpfCnpj = cliente.getCpfCnpj();
         if (StringUtils.estaVazia(cpfCnpj)) {
             erros.adicionar(CPF_CNPJ_NAO_INFORMADO);
@@ -60,23 +59,27 @@ public class ClienteMediator {
                 }
             }
         }
-
         String nome = cliente.getNome();
         if (StringUtils.estaVazia(nome)) {
             erros.adicionar(NOME_NAO_INFORMADO);
         } else if (StringUtils.tamanhoExcedido(nome, TAMANHO_MAX_NOME)) {
             erros.adicionar("Nome tem mais de " + TAMANHO_MAX_NOME + " caracteres");
         }
-
         Contato contato = cliente.getContato();
         if (contato == null) {
             erros.adicionar(CONTATO_NAO_INFORMADO);
-        } else {
+        }
+        LocalDate dataCadastro = cliente.getDataCadastro();
+        if (dataCadastro == null) {
+            erros.adicionar(DATA_DO_CADASTRO_NAO_INFORMADA);
+        } else if (dataCadastro.isAfter(LocalDate.now())) {
+            erros.adicionar("Data do cadastro não pode ser posterior à data atual");
+        }
+        if (contato != null) {
             String email = contato.getEmail();
             String celular = contato.getCelular();
             boolean emailVazio = StringUtils.estaVazia(email);
             boolean celularVazio = StringUtils.estaVazia(celular);
-            
             if (emailVazio && celularVazio) {
                 erros.adicionar("Celular e e-mail não foram informados");
             } else {
@@ -93,14 +96,7 @@ public class ClienteMediator {
                 }
             }
         }
-
-        LocalDate dataCadastro = cliente.getDataCadastro();
-        if (dataCadastro == null) {
-            erros.adicionar(DATA_DO_CADASTRO_NAO_INFORMADA);
-        } else if (dataCadastro.isAfter(LocalDate.now())) {
-            erros.adicionar("Data do cadastro não pode ser posterior à data atual");
-        }
-
+        
         return new ResultadoMediator(erros.tamanho() == 0, false, erros); 
 	}
 
@@ -110,15 +106,14 @@ public class ClienteMediator {
 		if (!resValidacao.isValidado()) {
 			return resValidacao;
 		}
-
-		boolean incluido = clienteDAO.incluir(cliente);
-        
-		if (!incluido) {
-			ListaString erros = new ListaString();
+        if (clienteDAO.buscar(cliente.getCpfCnpj()) != null) {
+            ListaString erros = new ListaString();
 			erros.adicionar("CPF/CNPJ já existente");
 			return new ResultadoMediator(true, false, erros);
-		}
+        }
 
+		clienteDAO.incluir(cliente);
+        
 		return new ResultadoMediator(true, true, new ListaString());
 	}
 
@@ -128,14 +123,13 @@ public class ClienteMediator {
 		if (!resValidacao.isValidado()) {
 			return resValidacao;
 		}
-
-		boolean alterado = clienteDAO.alterar(cliente);
-
-		if (!alterado) {
+		if (clienteDAO.buscar(cliente.getCpfCnpj()) == null) {
 			ListaString erros = new ListaString();
 			erros.adicionar("CPF/CNPJ inexistente");
 			return new ResultadoMediator(true, false, erros);
 		}
+
+		clienteDAO.alterar(cliente);
 
 		return new ResultadoMediator(true, true, new ListaString());
 	}
@@ -146,14 +140,13 @@ public class ClienteMediator {
 			erros.adicionar(CPF_CNPJ_NAO_INFORMADO); 
 			return new ResultadoMediator(false, false, erros);
         }
-
-		boolean excluido = clienteDAO.excluir(cpfCnpj);
-        
-		if (!excluido) {
+        if (clienteDAO.buscar(cpfCnpj) == null) {
 			ListaString erros = new ListaString();
 			erros.adicionar("CPF/CNPJ inexistente");
 			return new ResultadoMediator(true, false, erros);
-		}
+        }
+        
+		clienteDAO.excluir(cpfCnpj);
 
 		return new ResultadoMediator(true, true, new ListaString());
 	}
