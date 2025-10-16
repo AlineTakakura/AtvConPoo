@@ -6,25 +6,9 @@ import java.awt.Font;
 import java.awt.event.ItemEvent;
 import java.beans.Beans;
 import java.lang.reflect.Method;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JSeparator;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JScrollPane;
-import javax.swing.JRadioButton;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.text.NumberFormatter;
+import java.text.*;
+import javax.swing.*;
+import javax.swing.text.*;
 
 import br.edu.cs.poo.ac.ordem.entidades.Desktop;
 import br.edu.cs.poo.ac.ordem.entidades.Equipamento;
@@ -38,15 +22,14 @@ public class TelaEquipamento extends JFrame {
 
     private enum Modo { INICIAL, NOVO, EDICAO }
 
-    private JComboBox<String> cmbTipo; 
+    private JComboBox<String> cmbTipo;
     private JTextField txtSerial;
-    private JTextArea  txtDescricao;
+    private JTextArea txtDescricao;
     private JRadioButton rbNovoSim, rbNovoNao;
     private JFormattedTextField txtValor;
 
-    private JCheckBox chkDadosSensiveis; 
-    private JCheckBox chkEhServidor;     
-
+    private JCheckBox chkDadosSensiveis;
+    private JCheckBox chkEhServidor;
 
     private JButton btnNovo, btnBuscar, btnAdicionar, btnAlterar, btnExcluir, btnCancelar, btnLimpar;
 
@@ -243,7 +226,6 @@ public class TelaEquipamento extends JFrame {
                 ResultadoMediator r = isNotebook()
                         ? mediator.incluirNotebook(construirNotebook())
                         : mediator.incluirDesktop(construirDesktop());
-
                 if (!r.isOperacaoRealizada()) {
                     String s = "Operação não realizada pois:";
                     for (String m : r.getMensagensErro().listar()) s += "\n" + m;
@@ -262,7 +244,6 @@ public class TelaEquipamento extends JFrame {
                 ResultadoMediator r = isNotebook()
                         ? mediator.alterarNotebook(construirNotebook())
                         : mediator.alterarDesktop(construirDesktop());
-
                 if (!r.isOperacaoRealizada()) {
                     String s = "Operação não realizada pois:";
                     for (String m : r.getMensagensErro().listar()) s += "\n" + m;
@@ -284,7 +265,6 @@ public class TelaEquipamento extends JFrame {
             }
             String id = getIdEquipamento();
             ResultadoMediator r = isNotebook() ? mediator.excluirNotebook(id) : mediator.excluirDesktop(id);
-
             if (!r.isOperacaoRealizada()) {
                 String s = "Operação não realizada pois:";
                 for (String m : r.getMensagensErro().listar()) s += "\n" + m;
@@ -307,8 +287,9 @@ public class TelaEquipamento extends JFrame {
 
     private void setModo(Modo m) {
         boolean inicial = m == Modo.INICIAL;
-        boolean novo    = m == Modo.NOVO;
-        boolean edicao  = m == Modo.EDICAO;
+        boolean novo = m == Modo.NOVO;
+        boolean edicao = m == Modo.EDICAO;
+
         cmbTipo.setEnabled(inicial);
         txtSerial.setEnabled(inicial);
 
@@ -349,12 +330,12 @@ public class TelaEquipamento extends JFrame {
         chkDadosSensiveis.setVisible(note);
         chkEhServidor.setVisible(!note);
     }
+
     private Notebook construirNotebook() {
         double valor = (txtValor.getValue() instanceof Number)
                 ? ((Number) txtValor.getValue()).doubleValue() : 0.0;
-
         return new Notebook(
-                getIdEquipamento(),           
+                getIdEquipamento(),
                 txtDescricao.getText(),
                 rbNovoSim.isSelected(),
                 valor,
@@ -365,9 +346,8 @@ public class TelaEquipamento extends JFrame {
     private Desktop construirDesktop() {
         double valor = (txtValor.getValue() instanceof Number)
                 ? ((Number) txtValor.getValue()).doubleValue() : 0.0;
-
         return new Desktop(
-                getIdEquipamento(),         
+                getIdEquipamento(),
                 txtDescricao.getText(),
                 rbNovoSim.isSelected(),
                 valor,
@@ -408,14 +388,17 @@ public class TelaEquipamento extends JFrame {
             chkEhServidor.setSelected(Boolean.TRUE.equals(serv));
         }
     }
+
     private static String tryGetString(Object o, String method) {
         try { Method m = o.getClass().getMethod(method); Object r = m.invoke(o); return r != null ? r.toString() : null; }
         catch (Exception ignore) { return null; }
     }
+
     private static Boolean tryGetBoolean(Object o, String method) {
         try { Method m = o.getClass().getMethod(method); Object r = m.invoke(o); return (r instanceof Boolean) ? (Boolean) r : null; }
         catch (Exception ignore) { return null; }
     }
+
     private static Double tryGetDouble(Object o, String method) {
         try { Method m = o.getClass().getMethod(method); Object r = m.invoke(o); return (r instanceof Number) ? ((Number) r).doubleValue() : null; }
         catch (Exception ignore) { return null; }
