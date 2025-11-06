@@ -1,4 +1,4 @@
-package br.edu.cs.poo.ac.gui;
+package br.edu.cs.poo.ac.ordem.tela;
 
 import java.awt.Color;
 import java.awt.EventQueue;

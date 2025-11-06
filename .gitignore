@@ -1,1 +1,17 @@
-/target/
+# IntelliJ
+.idea/
+*.iml
+
+# Maven / Build
+target/
+out/
+*.class
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Linux
+*~
