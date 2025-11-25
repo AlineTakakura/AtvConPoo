@@ -1,24 +1,24 @@
 package br.edu.cs.poo.ac.ordem.entidades;
 
-import java.io.Serializable;
+import br.edu.cs.poo.ac.utils.Registro;
 import java.time.LocalDate;
-import lombok.Getter;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.Setter;
 
+@AllArgsConstructor
 @Getter
 @Setter
 
-public class FechamentoOrdemServico implements Serializable {
-    private static final long serialVersionUID = 1L;
 
-    private Long numeroOrdemServico;
+public class FechamentoOrdemServico implements Registro {
+    private String numeroOrdemServico;
     private LocalDate dataFechamento;
-    private Double valorFinal;
+    private boolean pago;
+    private String relatorioFinal;
 
-    public FechamentoOrdemServico(Long numeroOrdemServico, LocalDate dataFechamento, Double valorFinal) {
-        this.numeroOrdemServico = numeroOrdemServico;
-        this.dataFechamento = dataFechamento;
-        this.valorFinal = valorFinal;
+    public String getId() {
+        return this.numeroOrdemServico;
     }
 }

@@ -1,19 +1,21 @@
 package br.edu.cs.poo.ac.ordem.entidades;
 
-import java.io.Serializable;
+import br.edu.cs.poo.ac.utils.Registro;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 @Getter
 @Setter
-@AllArgsConstructor 
-public class OrdemServico implements Serializable{
-	private Cliente cliente;
+
+public class OrdemServico implements Registro {
+
+    private Cliente cliente;
     private PrecoBase precoBase;
     private Notebook notebook;
     private Desktop desktop;
@@ -22,26 +24,34 @@ public class OrdemServico implements Serializable{
     private double valor;
 
     public LocalDate getDataEstimadaEntrega() {
-        return dataHoraAbertura.toLocalDate().plusDays(prazoEmDias);
+
+        LocalDate dataAbertura = dataHoraAbertura.toLocalDate();
+
+        return dataAbertura.plusDays(prazoEmDias);
     }
 
     public String getNumero() {
-        String tipoEquipamento;
+
+        String concatenacao = "";
         if (notebook != null) {
-            tipoEquipamento = notebook.getIdTipo();
-        } else if (desktop != null) {
-            tipoEquipamento = desktop.getIdTipo();
+            concatenacao += notebook.getIdTipo();
+        } else{
+            concatenacao += desktop.getIdTipo();
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
+        concatenacao += dataHoraAbertura.format(formatter);
+
+        if (cliente.getCpfCnpj().length() > 11) {
+            concatenacao += cliente.getCpfCnpj();
         } else {
-            tipoEquipamento = "XX";
+            concatenacao += "000" + cliente.getCpfCnpj();
         }
 
-        String cpfCnpj = cliente.getCpfCnpj();
-        String dataHoraFormatada = dataHoraAbertura.format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
+        return concatenacao;
+    }
 
-        if (cpfCnpj != null && cpfCnpj.replaceAll("[^0-9]", "").length() > 11) {
-            return tipoEquipamento + dataHoraFormatada + cpfCnpj; 
-        }
-
-        return tipoEquipamento + dataHoraFormatada + "000" + cpfCnpj;
+    public String getId() {
+        return getNumero();
     }
 }

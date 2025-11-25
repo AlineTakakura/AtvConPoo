@@ -1,23 +1,19 @@
 package br.edu.cs.poo.ac.ordem.entidades;
 
+import br.edu.cs.poo.ac.utils.Registro;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-
 import lombok.Setter;
 
+@AllArgsConstructor
 @Getter
 @Setter
 
-public class Equipamento {
-    private String serial;
+public abstract class Equipamento implements Registro {
+    private String Serial;
     private String descricao;
     private boolean ehNovo;
     private double valorEstimado;
 
-    public Equipamento(String serial, String descricao, boolean ehNovo, double valorEstimado) {
-        this.serial = serial;
-        this.descricao = descricao;
-        this.ehNovo = ehNovo;
-        this.valorEstimado = valorEstimado;
-    }
+    public abstract String getIdTipo();
 }
-

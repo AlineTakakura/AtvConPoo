@@ -5,15 +5,23 @@ import lombok.Setter;
 
 @Getter
 @Setter
+
+
 public class Notebook extends Equipamento {
+
     private boolean carregaDadosSensiveis;
 
-    public Notebook(String serial,String descricao,boolean ehNovo,double valorEstimado,boolean carregaDadosSensiveis) {
-        super(serial,descricao,ehNovo,valorEstimado);
-        this.carregaDadosSensiveis=carregaDadosSensiveis;
+    public Notebook(String Serial, String descricao, boolean ehNovo, double valorEstimado,
+                    boolean carregaDadosSensiveis) {
+        super(Serial, descricao, ehNovo, valorEstimado);
+        this.carregaDadosSensiveis = carregaDadosSensiveis;
     }
 
-    public String getIdTipo() {
+    public String getIdTipo(){
         return "NO";
+    }
+
+    public String getId() {
+        return getIdTipo() + super.getSerial();
     }
 }
