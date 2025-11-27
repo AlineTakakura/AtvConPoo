@@ -1,9 +1,8 @@
 package br.edu.cs.poo.ac.ordem.daos;
 
-import java.io.Serializable;
-
 import br.edu.cesarschool.next.oo.persistenciaobjetos.CadastroObjetos;
 import br.edu.cs.poo.ac.utils.Registro;
+import java.io.Serializable;
 
 public abstract class DAOGenerico {
 
@@ -22,14 +21,14 @@ public abstract class DAOGenerico {
     public boolean incluir(Registro registro) {
         if (buscar(registro.getId()) != null)
             return false;
-        cadastroObjetos.incluir(registro, registro.getId());
+        cadastroObjetos.incluir((Serializable) registro, registro.getId());
         return true;
     }
 
     public boolean alterar(Registro registro) {
         if (buscar(registro.getId()) == null)
             return false;
-        cadastroObjetos.alterar(registro, registro.getId());
+        cadastroObjetos.alterar((Serializable) registro, registro.getId());
         return true;
     }
 

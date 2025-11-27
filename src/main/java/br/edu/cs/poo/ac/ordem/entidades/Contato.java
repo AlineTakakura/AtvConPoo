@@ -1,7 +1,5 @@
 package br.edu.cs.poo.ac.ordem.entidades;
 
-import java.io.Serializable;
-
 public class Contato implements Serializable{
 	private String email;
     private String celular;
