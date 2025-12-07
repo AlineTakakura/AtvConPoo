@@ -3,6 +3,7 @@ package br.edu.cs.poo.ac.ordem.entidades;
 public class Notebook extends Equipamento {
     private static final long serialVersionUID = 1L;
     private boolean carregaDadosSensiveis;
+    @Override
     public String getIdTipo() {
         return "NO";
     }

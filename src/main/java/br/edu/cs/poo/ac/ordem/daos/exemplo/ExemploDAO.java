@@ -1,49 +1,38 @@
-
 package br.edu.cs.poo.ac.ordem.daos.exemplo;
 
-import java.io.Serializable;
-
 import br.edu.cs.poo.ac.ordem.daos.DAOGenerico;
+import br.edu.cs.poo.ac.utils.Registro;
+
 /**
- *
- * O identificador �nico por objeto de Exemplo � o seu c�digo, que ser� usado nos m�todos
- * para verificar a exist�ncia no cadastro de um objeto com um dado identificador �nico.
- *
+ * O DAOGenerico agora encapsula a lgica bsica do CRUD.
+ * Este DAO apenas delega as chamadas e lida com os tipos especficos (Exemplo).
  */
 public class ExemploDAO extends DAOGenerico {
-    public ExemploDAO() {
-        super(Exemplo.class);
+    @Override
+    public Class<?> getClasseEntidade() {
+        return Exemplo.class;
     }
+
     public Exemplo buscar(String codigo) {
-        return (Exemplo)cadastroObjetos.buscar(codigo);
+        return (Exemplo)super.buscar(codigo);
     }
+
     public boolean incluir(Exemplo exemplo) {
-        if (buscar(exemplo.getCodigo()) == null) {
-            cadastroObjetos.incluir(exemplo, exemplo.getCodigo());
-            return true;
-        } else {
-            return false;
-        }
+        return super.incluir(exemplo);
     }
+
     public boolean alterar(Exemplo exemplo) {
-        if (buscar(exemplo.getCodigo()) != null) {
-            cadastroObjetos.alterar(exemplo, exemplo.getCodigo());
-            return true;
-        } else {
-            return false;
-        }
+        return super.alterar(exemplo);
     }
+
     public boolean excluir(String codigo) {
-        if (buscar(codigo) != null) {
-            cadastroObjetos.excluir(codigo);
-            return true;
-        } else {
-            return false;
-        }
+        return super.excluir(codigo);
     }
+
     public Exemplo[] buscarTodos() {
-        Serializable[] ret = cadastroObjetos.buscarTodos();
+        Registro[] ret = super.buscarTodos();
         Exemplo[] retorno;
+
         if (ret != null && ret.length > 0) {
             retorno = new Exemplo[ret.length];
             for (int i=0; i<ret.length; i++) {

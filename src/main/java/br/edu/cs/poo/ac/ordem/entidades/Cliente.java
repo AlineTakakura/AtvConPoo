@@ -1,10 +1,10 @@
 package br.edu.cs.poo.ac.ordem.entidades;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Period;
+import br.edu.cs.poo.ac.utils.Registro;
 
-public class Cliente implements Serializable {
+public class Cliente implements Registro {
     private static final long serialVersionUID = 1L;
     private String cpfCnpj;
     private String nome;
@@ -44,5 +44,9 @@ public class Cliente implements Serializable {
     }
     public void setDataCadastro(LocalDate dataCadastro) {
         this.dataCadastro = dataCadastro;
+    }
+    @Override
+    public String getId() {
+        return cpfCnpj;
     }
 }

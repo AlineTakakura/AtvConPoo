@@ -1,8 +1,8 @@
 package br.edu.cs.poo.ac.ordem.entidades;
 
-import java.io.Serializable;
+import br.edu.cs.poo.ac.utils.Registro;
 
-public abstract class Equipamento implements Serializable {
+public abstract class Equipamento implements Registro {
     private static final long serialVersionUID = 1L;
     private String serial;
     private String descricao;
@@ -38,6 +38,11 @@ public abstract class Equipamento implements Serializable {
     }
     public void setValorEstimado(double valorEstimado) {
         this.valorEstimado = valorEstimado;
+    }
+    public abstract String getIdTipo();
+    @Override
+    public String getId() {
+        return getIdTipo() + serial;
     }
 }
 

@@ -1,41 +1,34 @@
 package br.edu.cs.poo.ac.ordem.daos;
-import java.io.Serializable;
+
+import br.edu.cs.poo.ac.utils.Registro;
 import br.edu.cs.poo.ac.ordem.entidades.Cliente;
 
 public class ClienteDAO extends DAOGenerico {
-    public ClienteDAO() {
-        super(Cliente.class);
+    @Override
+    public Class<?> getClasseEntidade() {
+        return Cliente.class;
     }
+
     public Cliente buscar(String codigo) {
-        return (Cliente)cadastroObjetos.buscar(codigo);
+        return (Cliente)super.buscar(codigo);
     }
+
     public boolean incluir(Cliente cliente) {
-        if (buscar(cliente.getCpfCnpj()) == null) {
-            cadastroObjetos.incluir(cliente, cliente.getCpfCnpj());
-            return true;
-        } else {
-            return false;
-        }
+        return super.incluir(cliente);
     }
+
     public boolean alterar(Cliente cliente) {
-        if (buscar(cliente.getCpfCnpj()) != null) {
-            cadastroObjetos.alterar(cliente, cliente.getCpfCnpj());
-            return true;
-        } else {
-            return false;
-        }
+        return super.alterar(cliente);
     }
+
     public boolean excluir(String codigo) {
-        if (buscar(codigo) != null) {
-            cadastroObjetos.excluir(codigo);
-            return true;
-        } else {
-            return false;
-        }
+        return super.excluir(codigo);
     }
+
     public Cliente[] buscarTodos() {
-        Serializable[] ret = cadastroObjetos.buscarTodos();
+        Registro[] ret = super.buscarTodos();
         Cliente[] retorno;
+
         if (ret != null && ret.length > 0) {
             retorno = new Cliente[ret.length];
             for (int i=0; i<ret.length; i++) {
@@ -46,5 +39,4 @@ public class ClienteDAO extends DAOGenerico {
         }
         return retorno;
     }
-
 }

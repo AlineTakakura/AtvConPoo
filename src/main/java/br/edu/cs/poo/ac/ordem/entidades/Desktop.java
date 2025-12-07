@@ -3,6 +3,7 @@ package br.edu.cs.poo.ac.ordem.entidades;
 public class Desktop extends Equipamento {
     private static final long serialVersionUID = 1L;
     private boolean ehServidor;
+    @Override
     public String getIdTipo() {
         return "DE";
     }

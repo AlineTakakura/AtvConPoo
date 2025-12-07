@@ -1,50 +1,35 @@
-
 package br.edu.cs.poo.ac.ordem.daos;
 
-import java.io.Serializable;
-
+import br.edu.cs.poo.ac.utils.Registro;
 import br.edu.cs.poo.ac.ordem.entidades.Desktop;
 
-
 public class DesktopDAO extends DAOGenerico {
-    public DesktopDAO() {
-        super(Desktop.class);
+
+    @Override
+    public Class<?> getClasseEntidade() {
+        return Desktop.class;
     }
+
     public Desktop buscar(String codigo) {
-        return (Desktop)cadastroObjetos.buscar(codigo);
+        return (Desktop)super.buscar(codigo);
     }
-    private String getId(Desktop notebook) {
-        return notebook.getIdTipo() + notebook.getSerial();
+
+    public boolean incluir(Desktop desktop) {
+        return super.incluir(desktop);
     }
-    public boolean incluir(Desktop notebook) {
-        String id = getId(notebook);
-        if (buscar(id) == null) {
-            cadastroObjetos.incluir(notebook, id);
-            return true;
-        } else {
-            return false;
-        }
+
+    public boolean alterar(Desktop desktop) {
+        return super.alterar(desktop);
     }
-    public boolean alterar(Desktop notebook) {
-        String id = getId(notebook);
-        if (buscar(id) != null) {
-            cadastroObjetos.alterar(notebook, id);
-            return true;
-        } else {
-            return false;
-        }
-    }
+
     public boolean excluir(String id) {
-        if (buscar(id) != null) {
-            cadastroObjetos.excluir(id);
-            return true;
-        } else {
-            return false;
-        }
+        return super.excluir(id);
     }
+
     public Desktop[] buscarTodos() {
-        Serializable[] ret = cadastroObjetos.buscarTodos();
+        Registro[] ret = super.buscarTodos();
         Desktop[] retorno;
+
         if (ret != null && ret.length > 0) {
             retorno = new Desktop[ret.length];
             for (int i=0; i<ret.length; i++) {
@@ -55,5 +40,4 @@ public class DesktopDAO extends DAOGenerico {
         }
         return retorno;
     }
-
 }

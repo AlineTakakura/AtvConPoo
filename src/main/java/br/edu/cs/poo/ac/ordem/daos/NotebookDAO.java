@@ -1,49 +1,35 @@
-
 package br.edu.cs.poo.ac.ordem.daos;
 
-import java.io.Serializable;
-
+import br.edu.cs.poo.ac.utils.Registro;
 import br.edu.cs.poo.ac.ordem.entidades.Notebook;
 
 public class NotebookDAO extends DAOGenerico {
-    public NotebookDAO() {
-        super(Notebook.class);
+
+    @Override
+    public Class<?> getClasseEntidade() {
+        return Notebook.class;
     }
+
     public Notebook buscar(String codigo) {
-        return (Notebook)cadastroObjetos.buscar(codigo);
+        return (Notebook)super.buscar(codigo);
     }
-    private String getId(Notebook notebook) {
-        return notebook.getIdTipo() + notebook.getSerial();
-    }
+
     public boolean incluir(Notebook notebook) {
-        String id = getId(notebook);
-        if (buscar(id) == null) {
-            cadastroObjetos.incluir(notebook, id);
-            return true;
-        } else {
-            return false;
-        }
+        return super.incluir(notebook);
     }
+
     public boolean alterar(Notebook notebook) {
-        String id = getId(notebook);
-        if (buscar(id) != null) {
-            cadastroObjetos.alterar(notebook, id);
-            return true;
-        } else {
-            return false;
-        }
+        return super.alterar(notebook);
     }
+
     public boolean excluir(String id) {
-        if (buscar(id) != null) {
-            cadastroObjetos.excluir(id);
-            return true;
-        } else {
-            return false;
-        }
+        return super.excluir(id);
     }
+
     public Notebook[] buscarTodos() {
-        Serializable[] ret = cadastroObjetos.buscarTodos();
+        Registro[] ret = super.buscarTodos();
         Notebook[] retorno;
+
         if (ret != null && ret.length > 0) {
             retorno = new Notebook[ret.length];
             for (int i=0; i<ret.length; i++) {
@@ -54,5 +40,4 @@ public class NotebookDAO extends DAOGenerico {
         }
         return retorno;
     }
-
 }

@@ -1,12 +1,12 @@
 package br.edu.cs.poo.ac.ordem.entidades;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import static br.edu.cs.poo.ac.utils.ValidadorCPFCNPJ.isCPF;
+import br.edu.cs.poo.ac.utils.Registro;
 
-public class OrdemServico implements Serializable {
+public class OrdemServico implements Registro {
     private static final long serialVersionUID = 1L;
     private Cliente cliente;
     private PrecoBase precoBase;
@@ -87,5 +87,9 @@ public class OrdemServico implements Serializable {
     }
     public void setValor(double valor) {
         this.valor = valor;
+    }
+    @Override
+    public String getId() {
+        return getNumero();
     }
 }
