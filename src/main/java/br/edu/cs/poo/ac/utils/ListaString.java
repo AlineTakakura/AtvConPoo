@@ -9,7 +9,7 @@ public class ListaString {
         this.tamanho = 0;
     }
     public int tamanho() {
-    	return tamanho;
+        return tamanho;
     }
     public void adicionar(String str) {
         ElementoListaString novo = new ElementoListaString(str, null);

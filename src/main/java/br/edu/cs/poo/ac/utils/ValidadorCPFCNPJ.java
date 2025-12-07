@@ -1,110 +1,119 @@
+
 package br.edu.cs.poo.ac.utils;
 
-public class ValidadorCPFCNPJ{
-    
-    private static final int[] PESO_CPF={11,10,9,8,7,6,5,4,3,2};
-    private static final int[] PESO_CNPJ1={5,4,3,2,9,8,7,6,5,4,3,2};
-    private static final int[] PESO_CNPJ2={6,5,4,3,2,9,8,7,6,5,4,3,2};
-
-    public static ResultadoValidacaoCPFCNPJ validarCPFCNPJ(String cpfCnpj){
-        if(StringUtils.estaVazia(cpfCnpj)){
-            return new ResultadoValidacaoCPFCNPJ(false,false,ErroValidacaoCPFCNPJ.CPF_CNPJ_NAO_E_CPF_NEM_CNPJ);
-        }
-
-        String apenasDigitos=cpfCnpj.replaceAll("[^0-9]","");
-
-        if(apenasDigitos.length()!=11&&apenasDigitos.length()!=14){
-            return new ResultadoValidacaoCPFCNPJ(false,false,ErroValidacaoCPFCNPJ.CPF_CNPJ_NAO_E_CPF_NEM_CNPJ);
-        }
-        
-        if(isCPF(apenasDigitos)){
-            ErroValidacaoCPFCNPJ erro=validarCPF(apenasDigitos);
-            return new ResultadoValidacaoCPFCNPJ(true,false,erro);
-        } 
-        else if(isCNPJ(apenasDigitos)){
-            ErroValidacaoCPFCNPJ erro=validarCNPJ(apenasDigitos);
-            return new ResultadoValidacaoCPFCNPJ(false,true,erro);
-        } 
-        else{
-             return new ResultadoValidacaoCPFCNPJ(false,false,ErroValidacaoCPFCNPJ.CPF_CNPJ_NAO_E_CPF_NEM_CNPJ);
+public class ValidadorCPFCNPJ {
+    public static ResultadoValidacaoCPFCNPJ validarCPFCNPJ(String cpfCnpj) {
+        if (isCNPJ(cpfCnpj)) {
+            return new ResultadoValidacaoCPFCNPJ(false, true, validarCNPJ(cpfCnpj));
+        } else if (isCPF(cpfCnpj)) {
+            return new ResultadoValidacaoCPFCNPJ(true, false, validarCPF(cpfCnpj));
+        } else {
+            return new ResultadoValidacaoCPFCNPJ(false, false,
+                    ErroValidacaoCPFCNPJ.CPF_CNPJ_NAO_E_CPF_NEM_CNPJ);
         }
     }
 
-    public static boolean isCPF(String valor){
-        return valor.length()==11;
+    public static boolean isCPF(String valor) {
+        if (valor == null || valor.trim().isEmpty()) return false;
+        return valor.matches("\\d{11}");
     }
 
-    public static boolean isCNPJ(String valor){
-        return valor.length()==14;
+    public static boolean isCNPJ(String valor) {
+        if (valor == null || valor.trim().isEmpty()) return false;
+        return valor.matches("\\d{14}");
     }
 
-    public static ErroValidacaoCPFCNPJ validarCPF(String cpf){
-        if(!isCPF(cpf)){
-            return ErroValidacaoCPFCNPJ.CPF_CNPJ_NAO_E_CPF_NEM_CNPJ; 
+    public static ErroValidacaoCPFCNPJ validarCPF(String cpf) {
+        if (cpf == null || cpf.trim().isEmpty()) {
+            return ErroValidacaoCPFCNPJ.CPF_CNPJ_NULO_OU_BRANCO;
         }
-        
-        if(cpf.matches("(\\d)\\1{10}")){
+        if (cpf.length() != 11) {
+            return ErroValidacaoCPFCNPJ.CPF_CNPJ_COM_TAMANHO_INVALIDO;
+        }
+        if (!cpf.matches("\\d{11}")) {
+            return ErroValidacaoCPFCNPJ.CPF_CNPJ_COM_CARACTERES_INVALIDOS;
+        }
+        if (!isDigitoVerificadorValidoCPF(cpf)) {
             return ErroValidacaoCPFCNPJ.CPF_CNPJ_COM_DV_INVALIDO;
         }
-
-        if(!isDigitoVerificadorValidoCPF(cpf)){
-            return ErroValidacaoCPFCNPJ.CPF_CNPJ_COM_DV_INVALIDO;
-        }
-
-        return null;
+        return null; // CPF v�lido
     }
 
-    public static ErroValidacaoCPFCNPJ validarCNPJ(String cnpj){
-        if(!isCNPJ(cnpj)){
-            return ErroValidacaoCPFCNPJ.CPF_CNPJ_NAO_E_CPF_NEM_CNPJ;
+    public static ErroValidacaoCPFCNPJ validarCNPJ(String cnpj) {
+        if (cnpj == null || cnpj.trim().isEmpty()) {
+            return ErroValidacaoCPFCNPJ.CPF_CNPJ_NULO_OU_BRANCO;
         }
-        
-        if(cnpj.matches("(\\d)\\1{13}")){
+        if (cnpj.length() != 14) {
+            return ErroValidacaoCPFCNPJ.CPF_CNPJ_COM_TAMANHO_INVALIDO;
+        }
+        if (!cnpj.matches("\\d{14}")) {
+            return ErroValidacaoCPFCNPJ.CPF_CNPJ_COM_CARACTERES_INVALIDOS;
+        }
+        if (!isDigitoVerificadorValidoCNPJ(cnpj)) {
             return ErroValidacaoCPFCNPJ.CPF_CNPJ_COM_DV_INVALIDO;
         }
-        
-        if(!isDigitoVerificadorValidoCNPJ(cnpj)){
-            return ErroValidacaoCPFCNPJ.CPF_CNPJ_COM_DV_INVALIDO;
-        }
-
-        return null;
+        return null; // CNPJ v�lido
     }
+    private static boolean isDigitoVerificadorValidoCPF(String cpf) {
+        if (cpf == null || !cpf.matches("\\d{11}")) return false;
 
-    private static boolean isDigitoVerificadorValidoCPF(String cpf){
-        
-        int soma1=0;
-        for(int i=0;i<9;i++){
-            soma1+=(cpf.charAt(i)-'0')*(10-i);
+        // Extrai os 9 primeiros d�gitos
+        int[] numeros = new int[11];
+        for (int i = 0; i < 11; i++) {
+            numeros[i] = Character.getNumericValue(cpf.charAt(i));
         }
-        int dv1Calculado=(soma1%11<2)?0:11-(soma1%11);
 
-        if(dv1Calculado!=(cpf.charAt(9)-'0'))return false;
-
-        int soma2=0;
-        for(int i=0;i<10;i++){
-            soma2+=(cpf.charAt(i)-'0')*(11-i);
+        // Calcula o primeiro d�gito verificador
+        int soma1 = 0;
+        for (int i = 0; i < 9; i++) {
+            soma1 += numeros[i] * (10 - i);
         }
-        int dv2Calculado=(soma2%11<2)?0:11-(soma2%11);
+        int digito1 = (soma1 * 10) % 11;
+        if (digito1 == 10) digito1 = 0;
 
-        return dv2Calculado==(cpf.charAt(10)-'0');
+        // Verifica o primeiro d�gito
+        if (digito1 != numeros[9]) return false;
+
+        // Calcula o segundo d�gito verificador
+        int soma2 = 0;
+        for (int i = 0; i < 10; i++) {
+            soma2 += numeros[i] * (11 - i);
+        }
+        int digito2 = (soma2 * 10) % 11;
+        if (digito2 == 10) digito2 = 0;
+
+        // Verifica o segundo d�gito
+        return digito2 == numeros[10];
     }
-    
-    private static boolean isDigitoVerificadorValidoCNPJ(String cnpj){
-        
-        int soma1=0;
-        for(int i=0;i<12;i++){
-            soma1+=(cnpj.charAt(i)-'0')*PESO_CNPJ1[i];
-        }
-        int dv1Calculado=(soma1%11<2)?0:11-(soma1%11);
-        
-        if(dv1Calculado!=(cnpj.charAt(12)-'0'))return false;
+    public static boolean isDigitoVerificadorValidoCNPJ(String cnpj) {
+        if (cnpj == null || !cnpj.matches("\\d{14}")) return false;
 
-        int soma2=0;
-        for(int i=0;i<13;i++){
-            soma2+=(cnpj.charAt(i)-'0')*PESO_CNPJ2[i];
+        int[] pesosPrimeiro = {5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2};
+        int[] pesosSegundo  = {6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2};
+
+        int[] numeros = new int[14];
+        for (int i = 0; i < 14; i++) {
+            numeros[i] = Character.getNumericValue(cnpj.charAt(i));
         }
-        int dv2Calculado=(soma2%11<2)?0:11-(soma2%11);
-        
-        return dv2Calculado==(cnpj.charAt(13)-'0');
+
+        // Primeiro d�gito verificador
+        int soma1 = 0;
+        for (int i = 0; i < 12; i++) {
+            soma1 += numeros[i] * pesosPrimeiro[i];
+        }
+        int digito1 = soma1 % 11;
+        digito1 = (digito1 < 2) ? 0 : 11 - digito1;
+
+        if (digito1 != numeros[12]) return false;
+
+        // Segundo d�gito verificador
+        int soma2 = 0;
+        for (int i = 0; i < 13; i++) {
+            soma2 += numeros[i] * pesosSegundo[i];
+        }
+        int digito2 = soma2 % 11;
+        digito2 = (digito2 < 2) ? 0 : 11 - digito2;
+
+        return digito2 == numeros[13];
     }
 }

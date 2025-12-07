@@ -1,22 +1,20 @@
+
 package br.edu.cs.poo.ac.ordem.testes;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import br.edu.cs.poo.ac.ordem.daos.exemplo.ExemploDAO;
 import br.edu.cs.poo.ac.ordem.daos.exemplo.Exemplo;
 
 @Disabled("Classe suprimida temporariamente")
 public class TesteExemploDAO extends TesteAbstrato {
-//	private static final String NOVO_NOME = "Novo nome";
+    //	private static final String NOVO_NOME = "Novo nome";
 //	private static final String OUTRO_CODIGO = "002";
 //	private static final String CODIGO = "001";
-//	private static final String NOME = "Exemplo 1";	
+//	private static final String NOME = "Exemplo 1";
 //	private ExemploDAO dao = new ExemploDAO();
-	public TesteExemploDAO() {
-		super(Exemplo.class); 
-	}
-//	
+    public TesteExemploDAO() {
+        super(Exemplo.class);
+    }
+//
 //	@Test
 //	public void testeBuscaSucesso() {
 //		cadastro.incluir(new Exemplo(CODIGO, NOME), CODIGO);
@@ -42,20 +40,20 @@ public class TesteExemploDAO extends TesteAbstrato {
 //		cadastro.incluir(new Exemplo(CODIGO, NOME), CODIGO);
 //		boolean ret = dao.excluir(OUTRO_CODIGO);
 //		Exemplo seg = (Exemplo)cadastro.buscar(CODIGO);
-//		Assertions.assertNotNull(seg);		
+//		Assertions.assertNotNull(seg);
 //		Assertions.assertFalse(ret);
 //	}
 //	@Test
 //	public void testeInclusaoSucesso() {
 //		Exemplo segInc = new Exemplo(CODIGO, NOME);
-//		boolean ret = dao.incluir(segInc);		
+//		boolean ret = dao.incluir(segInc);
 //		Assertions.assertTrue(ret);
 //		Exemplo seg = (Exemplo)cadastro.buscar(CODIGO);
 //		Assertions.assertNotNull(seg);
-//		Assertions.assertTrue(ComparadoraObjetosSerial.compareObjectsSerial(segInc, seg));	
+//		Assertions.assertTrue(ComparadoraObjetosSerial.compareObjectsSerial(segInc, seg));
 //		Assertions.assertEquals(1, obterQuantidadeRegistros());
 //	}
-//	
+//
 //	@Test
 //	public void testeInclusaoIdUnicoJaExistente() {
 //		Exemplo seg = new Exemplo(CODIGO, NOME);
@@ -68,7 +66,7 @@ public class TesteExemploDAO extends TesteAbstrato {
 //	public void testeAlteracaoIdUnicoNaoExistente() {
 //		Exemplo segInc = new Exemplo(OUTRO_CODIGO, NOME);
 //		cadastro.incluir(segInc, OUTRO_CODIGO);
-//		boolean ret = dao.alterar(new Exemplo(CODIGO, NOME));		
+//		boolean ret = dao.alterar(new Exemplo(CODIGO, NOME));
 //		Assertions.assertFalse(ret);
 //		Exemplo seg = (Exemplo)cadastro.buscar(CODIGO);
 //		Exemplo seg1 = (Exemplo)cadastro.buscar(OUTRO_CODIGO);
@@ -77,7 +75,7 @@ public class TesteExemploDAO extends TesteAbstrato {
 //		Assertions.assertEquals(1, obterQuantidadeRegistros());
 //		Assertions.assertTrue(ComparadoraObjetosSerial.compareObjectsSerial(segInc, seg1));
 //	}
-//	
+//
 //	@Test
 //	public void testeAlteracaoSucesso() {
 //		Exemplo segInc = new Exemplo(CODIGO, NOME);
@@ -109,5 +107,5 @@ public class TesteExemploDAO extends TesteAbstrato {
 //		Assertions.assertNotNull(ret);
 //		Assertions.assertEquals(3, obterQuantidadeRegistros());
 //		Assertions.assertEquals(3, ret.length);
-//	}	
+//	}
 }

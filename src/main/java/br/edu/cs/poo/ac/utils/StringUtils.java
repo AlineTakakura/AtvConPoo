@@ -1,52 +1,45 @@
 package br.edu.cs.poo.ac.utils;
 
-public class StringUtils{
+import java.util.regex.Pattern;
 
-    public static boolean estaVazia(String str){
-        if(str==null){
-        	return true;
-        }
-        for(int i=0;i<str.length();i++){
-            if(str.charAt(i)!=' '){
-                return false;
+public class StringUtils {
+    private static final Pattern EMAIL_PATTERN = Pattern.compile(
+            "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}$",
+            Pattern.CASE_INSENSITIVE);
+    // Regex: (NN)NNNNNNNN ou (NN)NNNNNNNNN
+    private static final Pattern PADRAO_TELEFONE = Pattern.compile("^\\(\\d{2}\\)\\d{8,9}$");
+
+    public static boolean estaVazia(String str) {
+        return str == null || str.trim().isEmpty();
+    }
+    public static boolean tamanhoExcedido(String str, int tamanho) {
+        if (tamanho < 0) {
+            return false;
+        } else {
+            if (str == null) {
+                return tamanho > 0;
+            } else {
+                return str.length() > tamanho;
             }
         }
-        return true;
     }
-
-    public static boolean tamanhoExcedido(String str, int tamanho){
-        if(tamanho<0){
-        	return false;  
-        }
-        if(str==null){
-        	return tamanho> 0;
-        }
-        return str.trim().length()>tamanho;
-    }
-
     public static boolean tamanhoMenor(String str, int tamanho) {
-        if (tamanho <= 0) {
+        if (tamanho < 0) {
             return false;
+        } else {
+            if (str == null) {
+                return tamanho > 0;
+            } else {
+                return str.length() < tamanho;
+            }
         }
-        if (str == null) {
-            return true;
-        }
-        return str.trim().length() < tamanho;
     }
-    
     public static boolean emailValido(String email) {
-        if(estaVazia(email)) {
-        	return false;
-        }
-        String regex="^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$";
-        return email.matches(regex);
+        if (email == null) return false;
+        return EMAIL_PATTERN.matcher(email).matches();
     }
-
-    public static boolean telefoneValido(String tel){
-        if(estaVazia(tel)){
-        	return false;
-        }
-        String regex="^\\(\\d{2}\\)\\d{8,9}$";
-        return tel.matches(regex);
+    public static boolean telefoneValido(String tel) {
+        if (tel == null || tel.trim().isEmpty()) return false;
+        return PADRAO_TELEFONE.matcher(tel).matches();
     }
 }

@@ -13,15 +13,19 @@
 
     <properties>
 
-        <maven.compiler.release>21</maven.compiler.release>
+        <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>br.edu.cesarschool.next</groupId>
-            <artifactId>persistenciaobjetos</artifactId>
+            <artifactId>persistencia-objetos-local</artifactId>
             <version>1.0</version>
+
+            <scope>system</scope>
+
+            <systemPath>${project.basedir}/libs/PersistenciaObjetos.jar</systemPath>
         </dependency>
 
 
@@ -30,6 +34,24 @@
             <artifactId>lombok</artifactId>
             <version>1.18.32</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.8.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.8.1</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

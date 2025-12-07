@@ -4,8 +4,7 @@ import br.edu.cesarschool.next.oo.persistenciaobjetos.CadastroObjetos;
 
 public class DAOGenerico {
     protected CadastroObjetos cadastroObjetos;
-@SuppressWarnings("rawtypes")
-    public DAOGenerico(Class classe) {
+    public DAOGenerico(Class<?> classe) {
         cadastroObjetos = new CadastroObjetos(classe);
     }
 }
