@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import br.edu.cs.poo.ac.ordem.daos.DAOGenerico;
 import br.edu.cs.poo.ac.ordem.testes.TesteAbstrato;
 import br.edu.cs.poo.ac.utils.Registro;
+import br.edu.cs.poo.ac.ordem.testes.ComparadoraObjetosSerial;
+
 
 public class TesteDAOGenerico extends TesteAbstrato {
     public TesteDAOGenerico() {
