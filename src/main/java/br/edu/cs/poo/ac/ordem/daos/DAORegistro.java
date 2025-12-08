@@ -1,69 +1,66 @@
 package br.edu.cs.poo.ac.ordem.daos;
 
-import java.util.Arrays;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import br.edu.cesarschool.next.oo.persistenciaobjetos.CadastroObjetos;
 import br.edu.cs.poo.ac.excecoes.ExcecaoObjetoJaExistente;
 import br.edu.cs.poo.ac.excecoes.ExcecaoObjetoNaoExistente;
 import br.edu.cs.poo.ac.utils.Registro;
 
-// DAORegistro: Classe Parametrizada que lanca excecoes e lida com o encoding 'corrompido'
 public class DAORegistro<T extends Registro> {
-    private CadastroObjetos cadastro;
-    private Class<T> tipo;
+    private final CadastroObjetos cadastro;
+    private final String nomeClasse;
 
-    public DAORegistro(Class<T> tipo) {
-        this.tipo = tipo;
-        this.cadastro = new CadastroObjetos(tipo);
+    public DAORegistro(Class<T> classe) {
+        this.cadastro = new CadastroObjetos(classe);
+        this.nomeClasse = classe.getSimpleName();
     }
 
-    public void incluir(T registro) throws ExcecaoObjetoJaExistente {
-        try {
-            cadastro.incluir(registro, registro.getId());
-        } catch (RuntimeException e) {
-            // CORREÇÃO: Reverter para "j? existente" para casar com a string esperada no teste
-            if (e.getMessage().contains("existe") || e.getMessage().contains("Arquivo")) {
-                throw new ExcecaoObjetoJaExistente(tipo.getSimpleName() + " j? existente");
-            }
-            throw e;
-        }
+    public String getNomeClasse() {
+        return nomeClasse;
     }
 
-    public void alterar(T registro) throws ExcecaoObjetoNaoExistente {
-        try {
-            cadastro.alterar(registro, registro.getId());
-        } catch (RuntimeException e) {
-            // CORREÇÃO: Reverter para "n?o existente" para casar com a string esperada no teste
-            if (e.getMessage().contains("não existe") || e.getMessage().contains("nao existe") || e.getMessage().contains("não pôde ser apagado")) {
-                throw new ExcecaoObjetoNaoExistente(tipo.getSimpleName() + " n?o existente");
-            }
-            throw e;
-        }
+    public T buscar(String id) {
+        return (T) cadastro.buscar(id);
     }
 
-    public void excluir(String chave) throws ExcecaoObjetoNaoExistente {
-        try {
-            cadastro.excluir(chave);
-        } catch (RuntimeException e) {
-            // CORREÇÃO: Reverter para "n?o existente" para casar com a string esperada no teste
-            if (e.getMessage().contains("não existe") || e.getMessage().contains("nao existe") || e.getMessage().contains("não pôde ser apagado")) {
-                throw new ExcecaoObjetoNaoExistente(tipo.getSimpleName() + " n?o existente");
-            }
-            throw e;
-        }
+    public void incluir(T instancia) throws ExcecaoObjetoJaExistente {
+        if (instancia == null)
+            return;
+        if (buscar(instancia.getId()) != null)
+            throw new ExcecaoObjetoJaExistente(getNomeClasse() + " já existente");
+
+        cadastro.incluir(instancia, instancia.getId());
     }
 
-    @SuppressWarnings("unchecked")
-    public T buscar(String chave) {
-        return (T) cadastro.buscar(chave);
+    public void alterar(T instancia) throws ExcecaoObjetoNaoExistente {
+        if (instancia == null)
+            return;
+        if (buscar(instancia.getId()) == null)
+            throw new ExcecaoObjetoNaoExistente(getNomeClasse() + " não existente");
+
+        cadastro.alterar(instancia, instancia.getId());
     }
 
-    @SuppressWarnings("unchecked")
+    public void excluir(String id) throws ExcecaoObjetoNaoExistente {
+        if (id == null)
+            return;
+        if (buscar(id) == null)
+            throw new ExcecaoObjetoNaoExistente(getNomeClasse() + " não existente");
+
+        cadastro.excluir(id);
+    }
+
     public List<T> buscarTodos() {
-        return Arrays.stream(cadastro.buscarTodos())
-                .map(r -> (T) r)
-                .collect(Collectors.toList());
+        Serializable[] ret = cadastro.buscarTodos();
+        List<T> list = new ArrayList<T>();
+
+        if (ret == null) return list;
+        for(int i = 0; i < ret.length; i++) {
+            list.add((T) ret[i]);
+        }
+        return list;
     }
 }
