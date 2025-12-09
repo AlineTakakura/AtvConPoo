@@ -26,17 +26,15 @@ import br.edu.cs.poo.ac.ordem.mediators.ResultadoMediator;
 import br.edu.cs.poo.ac.ordem.testes.FileUtils;
 import br.edu.cs.poo.ac.ordem.testes.TesteAbstrato;
 import br.edu.cs.poo.ac.utils.ListaString;
-import br.edu.cs.poo.ac.ordem.testes.ComparadoraObjetosSerial;
-
 
 public class TesteOrdemServicoMediator extends TesteAbstrato {
 
-    private static final String ORDEM_JA_FOI_FECHADA = "Ordem j� foi fechada";
-    private static final String ORDEM_JA_FOI_CANCELADA = "Ordem j� foi cancelada";
-    private static final String NUMERO_DE_ORDEM_NAO_ENCONTRADO = "N�mero de ordem n�o encontrado";
-    private static final String NUMERO_DE_ORDEM_NAO_INFORMADO = "N�mero de ordem n�o informado";
-    private static final String RELATORIO_FINAL_NAO_INFORMADO = "Relat�rio final n�o informado";
-    private static final String NUMERO_DE_ORDEM_DEVE_SER_INFORMADO = "N�mero de ordem deve ser informado";
+    private static final String ORDEM_JA_FOI_FECHADA = "Ordem já foi fechada";
+    private static final String ORDEM_JA_FOI_CANCELADA = "Ordem já foi cancelada";
+    private static final String NUMERO_DE_ORDEM_NAO_ENCONTRADO = "Número de ordem não encontrado";
+    private static final String NUMERO_DE_ORDEM_NAO_INFORMADO = "Número de ordem não informado";
+    private static final String RELATORIO_FINAL_NAO_INFORMADO = "Relatório final não informado";
+    private static final String NUMERO_DE_ORDEM_DEVE_SER_INFORMADO = "Número de ordem deve ser informado";
     private static final String MOTIVO_DEVE_SER_INFORMADO = "Motivo deve ser informado";
     private static final String CPF01 = "23456789011";
     private static final String CNPJ01 = "23456789011234";
@@ -64,7 +62,7 @@ public class TesteOrdemServicoMediator extends TesteAbstrato {
         assertionsResultadoMediatorNaoValidado(res);
         ListaString mensagens = res.getMensagensErro();
         Assertions.assertEquals(1, mensagens.tamanho());
-        Assertions.assertEquals("Dados b�sicos da ordem de servi�o n�o informados", mensagens.buscar(0));
+        Assertions.assertEquals("Dados básicos da ordem de serviço não informados", mensagens.buscar(0));
         DadosOrdemServico dados = new DadosOrdemServico(null, 0, null, null);
         try {
             mediator.incluir(dados);
@@ -102,8 +100,8 @@ public class TesteOrdemServicoMediator extends TesteAbstrato {
         assertionsResultadoMediatorNaoValidado(res);
         ListaString mensagens = res.getMensagensErro();
         Assertions.assertEquals(2, mensagens.tamanho());
-        Assertions.assertEquals("CPF/CNPJ do cliente n�o encontrado", mensagens.buscar(0));
-        Assertions.assertEquals("Id do equipamento n�o encontrado", mensagens.buscar(1));
+        Assertions.assertEquals("CPF/CNPJ do cliente não encontrado", mensagens.buscar(0));
+        Assertions.assertEquals("Id do equipamento não encontrado", mensagens.buscar(1));
     }
     private void wrapTesteValidarInclusao03() {
         ResultadoMediator res = null;
@@ -123,7 +121,7 @@ public class TesteOrdemServicoMediator extends TesteAbstrato {
         assertionsResultadoMediatorNaoValidado(res);
         ListaString mensagens = res.getMensagensErro();
         Assertions.assertEquals(1, mensagens.tamanho());
-        Assertions.assertEquals("Prazo e valor n�o podem ser avaliados pois o pre�o base � incompat�vel com cliente pessoa f�sica", mensagens.buscar(0));
+        Assertions.assertEquals("Prazo e valor não podem ser avaliados pois o preço base é incompatível com cliente pessoa física", mensagens.buscar(0));
     }
     private void wrapTesteValidarInclusaoValorPrazo(String cpfCnpj, PrecoBase pb, double valor,
                                                     int prazo, Equipamento equip, String pref) {
@@ -144,8 +142,8 @@ public class TesteOrdemServicoMediator extends TesteAbstrato {
         Assertions.assertNotNull(ordem);
         Assertions.assertNotNull(ordem.getDataHoraAbertura());
         Assertions.assertEquals(1, obterQuantidadeRegistros());
-        // Passando a r�gua em um valor trivial
-        // N�o esque�am de setar a data e hora atual na inclus�o da ordem
+        // Passando a régua em um valor trivial
+        // Não esqueçam de setar a data e hora atual na inclusão da ordem
         ordemRef.setDataHoraAbertura(ordem.getDataHoraAbertura());
         boolean comp = ComparadoraObjetosSerial.compareObjectsSerial(ordemRef, ordem);
         Assertions.assertTrue(comp);
@@ -153,10 +151,10 @@ public class TesteOrdemServicoMediator extends TesteAbstrato {
     private void assertionsResultadoTudoNuloBranco(ResultadoMediator res) {
         ListaString mensagens = res.getMensagensErro();
         Assertions.assertEquals(4, mensagens.tamanho());
-        Assertions.assertEquals("C�digo do pre�o base inv�lido", mensagens.buscar(0));
-        Assertions.assertEquals("Vendedor n�o informado", mensagens.buscar(1));
-        Assertions.assertEquals("CPF/CNPJ do cliente n�o informado", mensagens.buscar(2));
-        Assertions.assertEquals("Id do equipamento n�o informado", mensagens.buscar(3));
+        Assertions.assertEquals("Código do preço base inválido", mensagens.buscar(0));
+        Assertions.assertEquals("Vendedor não informado", mensagens.buscar(1));
+        Assertions.assertEquals("CPF/CNPJ do cliente não informado", mensagens.buscar(2));
+        Assertions.assertEquals("Id do equipamento não informado", mensagens.buscar(3));
     }
     @Test
     public void teste00() {
@@ -274,7 +272,7 @@ public class TesteOrdemServicoMediator extends TesteAbstrato {
     public void teste17() {
         ResultadoMediator res = null;
         try {
-            mediator.cancelar("DE20251010112212345678901", "Erro de digita��o", LocalDateTime.now());
+            mediator.cancelar("DE20251010112212345678901", "Erro de digitação", LocalDateTime.now());
             Assertions.fail();
         } catch (ExcecaoNegocio e) {
             res = e.getRes();
@@ -297,7 +295,7 @@ public class TesteOrdemServicoMediator extends TesteAbstrato {
         ordemRef.setStatus(StatusOrdem.CANCELADA);
         cadastro.incluir(ordemRef, numero);
         try {
-            mediator.cancelar(numero, "J� cancelada?", LocalDateTime.now());
+            mediator.cancelar(numero, "Já cancelada?", LocalDateTime.now());
             Assertions.fail();
         } catch (ExcecaoNegocio e) {
             res = e.getRes();
@@ -324,7 +322,7 @@ public class TesteOrdemServicoMediator extends TesteAbstrato {
         ordemRef.setStatus(StatusOrdem.FECHADA);
         cadastro.incluir(ordemRef, numero);
         try {
-            mediator.cancelar(numero, "J� fechada?", LocalDateTime.now());
+            mediator.cancelar(numero, "Já fechada?", LocalDateTime.now());
             Assertions.fail();
         } catch (ExcecaoNegocio e) {
             res = e.getRes();
@@ -359,7 +357,7 @@ public class TesteOrdemServicoMediator extends TesteAbstrato {
         Assertions.assertNotNull(res);
         ListaString mensagens = res.getMensagensErro();
         Assertions.assertEquals(1, mensagens.tamanho());
-        Assertions.assertEquals("Ordem aberta h� mais de dois dias n�o pode ser cancelada", mensagens.buscar(0));
+        Assertions.assertEquals("Ordem aberta há mais de dois dias não pode ser cancelada", mensagens.buscar(0));
         OrdemServico ordem = (OrdemServico)cadastro.buscar(numero);
         Assertions.assertNotNull(ordem);
         Assertions.assertEquals(1, obterQuantidadeRegistros());
@@ -408,7 +406,7 @@ public class TesteOrdemServicoMediator extends TesteAbstrato {
         assertionsResultadoMediatorNaoValidado(res);
         ListaString mensagens = res.getMensagensErro();
         Assertions.assertEquals(1, mensagens.tamanho());
-        Assertions.assertEquals("Dados do fechamento de ordem n�o informados", mensagens.buscar(0));
+        Assertions.assertEquals("Dados do fechamento de ordem não informados", mensagens.buscar(0));
         FechamentoOrdemServico fecho = new FechamentoOrdemServico(null, null, false, null);
         try {
             mediator.fechar(fecho);
@@ -419,7 +417,7 @@ public class TesteOrdemServicoMediator extends TesteAbstrato {
         mensagens = res.getMensagensErro();
         Assertions.assertEquals(3, mensagens.tamanho());
         Assertions.assertEquals(RELATORIO_FINAL_NAO_INFORMADO, mensagens.buscar(0));
-        Assertions.assertEquals("Data de fechamento n�o informada", mensagens.buscar(1));
+        Assertions.assertEquals("Data de fechamento não informada", mensagens.buscar(1));
         Assertions.assertEquals(NUMERO_DE_ORDEM_NAO_INFORMADO, mensagens.buscar(2));
         fecho = new FechamentoOrdemServico("   ", LocalDate.now().plusDays(1), false, "           ");
         try {

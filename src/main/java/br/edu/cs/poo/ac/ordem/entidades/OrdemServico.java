@@ -1,95 +1,101 @@
 package br.edu.cs.poo.ac.ordem.entidades;
 
-import java.time.LocalDate; // Importação adicionada
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import br.edu.cs.poo.ac.utils.Registro;
-import br.edu.cs.poo.ac.excecoes.ExcecaoNegocio;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class OrdemServico implements Registro {
-    private static final long serialVersionUID = 1L;
-    private String numero;
+
     private Cliente cliente;
     private PrecoBase precoBase;
+
     private Equipamento equipamento;
+    private Notebook notebook;
+    private Desktop desktop;
+
     private LocalDateTime dataHoraAbertura;
     private int prazoEmDias;
     private double valor;
+
     private StatusOrdem status;
     private String vendedor;
     private FechamentoOrdemServico dadosFechamento;
-
-    private String motivoCancelamento;
     private LocalDateTime dataHoraCancelamento;
+    private String motivoCancelamento;
 
     public OrdemServico(Cliente cliente, PrecoBase precoBase, Equipamento equipamento,
                         LocalDateTime dataHoraAbertura, int prazoEmDias, double valor) {
         this.cliente = cliente;
         this.precoBase = precoBase;
         this.equipamento = equipamento;
+
+        if (equipamento instanceof Notebook) {
+            this.notebook = (Notebook) equipamento;
+        } else if (equipamento instanceof Desktop) {
+            this.desktop = (Desktop) equipamento;
+        }
+
         this.dataHoraAbertura = dataHoraAbertura;
         this.prazoEmDias = prazoEmDias;
         this.valor = valor;
         this.status = StatusOrdem.ABERTA;
-        this.numero = gerarNumero();
     }
 
-    private String gerarNumero() {
-        String prefixo = equipamento.getIdTipo();
-        String dataHoraStr = dataHoraAbertura.format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
-        String cpfCnpj = cliente.getCpfCnpj();
-
-        String suffix;
-        if (cpfCnpj != null && cpfCnpj.length() == 11) {
-            suffix = String.format("%014d", Long.parseLong(cpfCnpj));
-        } else {
-            suffix = cpfCnpj;
-        }
-
-        return prefixo + dataHoraStr + suffix;
+    @Override
+    public String getId() {
+        return getNumero();
     }
 
-    @Override public String getId() { return numero; }
-    public String getNumero() { return numero; }
-    public Cliente getCliente() { return cliente; }
-    public PrecoBase getPrecoBase() { return precoBase; }
-    public Equipamento getEquipamento() { return equipamento; }
-    public LocalDateTime getDataHoraAbertura() { return dataHoraAbertura; }
-    public int getPrazoEmDias() { return prazoEmDias; }
-    public double getValor() { return valor; }
-    public StatusOrdem getStatus() { return status; }
-    public String getVendedor() { return vendedor; }
-    public FechamentoOrdemServico getDadosFechamento() { return dadosFechamento; }
-    public String getMotivoCancelamento() { return motivoCancelamento; }
-    public LocalDateTime getDataHoraCancelamento() { return dataHoraCancelamento; }
-
-    // MÉTODO ADICIONADO PARA CORRIGIR O ERRO
     public LocalDate getDataEstimadaEntrega() {
-        return this.dataHoraAbertura.toLocalDate().plusDays(this.prazoEmDias);
+        if (dataHoraAbertura == null) return null;
+        return dataHoraAbertura.toLocalDate().plusDays(prazoEmDias);
     }
 
-    // Setters exigidos pelo teste01
-    public void setCliente(Cliente cliente) { this.cliente = cliente; }
-    public void setPrecoBase(PrecoBase precoBase) { this.precoBase = precoBase; }
-    public void setEquipamento(Equipamento equipamento) { this.equipamento = equipamento; }
-    public void setDataHoraAbertura(LocalDateTime dataHoraAbertura) { this.dataHoraAbertura = dataHoraAbertura; }
-    public void setPrazoEmDias(int prazoEmDias) { this.prazoEmDias = prazoEmDias; }
-    public void setValor(double valor) { this.valor = valor; }
-    public void setDadosFechamento(FechamentoOrdemServico dadosFechamento) { this.dadosFechamento = dadosFechamento; }
-    public void setStatus(StatusOrdem status) { this.status = status; }
-    public void setVendedor(String vendedor) { this.vendedor = vendedor; }
-    public void setMotivoCancelamento(String motivoCancelamento) { this.motivoCancelamento = motivoCancelamento; }
-    public void setDataHoraCancelamento(LocalDateTime dataHoraCancelamento) { this.dataHoraCancelamento = dataHoraCancelamento; }
-
-    public double getValorTotal() {
-        return prazoEmDias * valor;
-    }
-
-    public void fecharOrdem(FechamentoOrdemServico dadosFechamento) throws ExcecaoNegocio {
-        if (this.status == StatusOrdem.FECHADA || this.status == StatusOrdem.CANCELADA) {
-            throw new ExcecaoNegocio("Ordem de serviço não pode ser fechada, status atual: " + this.status);
+    public String getNumero() {
+        if (equipamento == null) {
+            if (notebook != null) equipamento = notebook;
+            else if (desktop != null) equipamento = desktop;
         }
-        this.status = StatusOrdem.FECHADA;
-        this.dadosFechamento = dadosFechamento;
+
+        String prefixo = (equipamento != null) ? equipamento.getIdTipo() : "XX";
+
+        if (cliente == null || dataHoraAbertura == null) return null;
+
+        int ano = dataHoraAbertura.getYear();
+        int mes = dataHoraAbertura.getMonthValue();
+        int dia = dataHoraAbertura.getDayOfMonth();
+        int hora = dataHoraAbertura.getHour();
+        int min = dataHoraAbertura.getMinute();
+
+        String dataJunta = String.format("%04d%02d%02d%02d%02d", ano, mes, dia, hora, min);
+        String identificacao = cliente.getCpfCnpj();
+
+        if (identificacao.length() == 11) {
+            return prefixo + dataJunta + "000" + identificacao;
+        } else {
+            return prefixo + dataJunta + identificacao;
+        }
+    }
+
+    public void setEquipamento(Equipamento equipamento) {
+        this.equipamento = equipamento;
+        if (equipamento instanceof Notebook) {
+            this.notebook = (Notebook) equipamento;
+            this.desktop = null;
+        } else if (equipamento instanceof Desktop) {
+            this.desktop = (Desktop) equipamento;
+            this.notebook = null;
+        }
+    }
+
+    public Equipamento getEquipamento() {
+        if (equipamento != null) return equipamento;
+        if (notebook != null) return notebook;
+        if (desktop != null) return desktop;
+        return null;
     }
 }

@@ -23,8 +23,8 @@ import br.edu.cs.poo.ac.ordem.mediators.ResultadoMediator;
 import br.edu.cs.poo.ac.utils.ListaString;
 
 /*
- * O tipo StatusOrdem � um enum.
- * Os tipos StatusOrdem e PrecoBase n�o devem ter m�todos set para os seus atributos.
+ * O tipo StatusOrdem é um enum.
+ * Os tipos StatusOrdem e PrecoBase não devem ter métodos set para os seus atributos.
  */
 public class TesteEntidadesExcecoes {
     private static final Desktop DESK = new Desktop("1234", "Desktop 1", false, 10000.00, true);
@@ -136,9 +136,9 @@ public class TesteEntidadesExcecoes {
         Assertions.assertEquals(PrecoBase.MANUTENCAO_EMERGENCIAL.getCodigo(),2);
         Assertions.assertEquals(PrecoBase.REVISAO.getCodigo(),3);
         Assertions.assertEquals(PrecoBase.LIMPEZA.getCodigo(),4);
-        Assertions.assertEquals(PrecoBase.MANUTENCAO_NORMAL.getDescricao(),"Manuten��o normal");
-        Assertions.assertEquals(PrecoBase.MANUTENCAO_EMERGENCIAL.getDescricao(),"Manuten��o emergencial");
-        Assertions.assertEquals(PrecoBase.REVISAO.getDescricao(),"Revis�o");
+        Assertions.assertEquals(PrecoBase.MANUTENCAO_NORMAL.getDescricao(),"Manutenção normal");
+        Assertions.assertEquals(PrecoBase.MANUTENCAO_EMERGENCIAL.getDescricao(),"Manutenção emergencial");
+        Assertions.assertEquals(PrecoBase.REVISAO.getDescricao(),"Revisão");
         Assertions.assertEquals(PrecoBase.LIMPEZA.getDescricao(),"Limpeza");
         Assertions.assertTrue(PrecoBase.getPrecoBase(0) == null);
         Assertions.assertTrue(PrecoBase.getPrecoBase(1) == PrecoBase.MANUTENCAO_NORMAL);

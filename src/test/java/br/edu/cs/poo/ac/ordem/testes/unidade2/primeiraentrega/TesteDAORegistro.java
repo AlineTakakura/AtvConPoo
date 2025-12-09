@@ -10,8 +10,6 @@ import br.edu.cs.poo.ac.excecoes.ExcecaoObjetoNaoExistente;
 import br.edu.cs.poo.ac.ordem.daos.DAORegistro;
 import br.edu.cs.poo.ac.ordem.testes.TesteAbstrato;
 import br.edu.cs.poo.ac.utils.Registro;
-import br.edu.cs.poo.ac.ordem.testes.ComparadoraObjetosSerial;
-
 
 public class TesteDAORegistro extends TesteAbstrato {
     public TesteDAORegistro() {
@@ -27,7 +25,7 @@ public class TesteDAORegistro extends TesteAbstrato {
             dao.incluir(ent);
             Assertions.fail();
         } catch (ExcecaoObjetoJaExistente e) {
-            Assertions.assertEquals("Entidade j� existente", e.getMessage());
+            Assertions.assertEquals("Entidade já existente", e.getMessage());
         }
         Entidade entBus = (Entidade)cadastro.buscar("1");
         Assertions.assertEquals(1, obterQuantidadeRegistros());
@@ -52,7 +50,7 @@ public class TesteDAORegistro extends TesteAbstrato {
             dao.alterar(ent);
             Assertions.fail();
         } catch (ExcecaoObjetoNaoExistente e) {
-            Assertions.assertEquals("Entidade n�o existente", e.getMessage());
+            Assertions.assertEquals("Entidade não existente", e.getMessage());
         }
         Assertions.assertEquals(0, obterQuantidadeRegistros());
     }
@@ -76,7 +74,7 @@ public class TesteDAORegistro extends TesteAbstrato {
             dao.excluir("5");
             Assertions.fail();
         } catch (ExcecaoObjetoNaoExistente e) {
-            Assertions.assertEquals("Entidade n�o existente", e.getMessage());
+            Assertions.assertEquals("Entidade não existente", e.getMessage());
         }
         Assertions.assertEquals(0, obterQuantidadeRegistros());
     }

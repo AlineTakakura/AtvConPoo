@@ -16,8 +16,6 @@ import br.edu.cs.poo.ac.ordem.entidades.OrdemServico;
 import br.edu.cs.poo.ac.ordem.entidades.PrecoBase;
 import br.edu.cs.poo.ac.ordem.entidades.StatusOrdem;
 import br.edu.cs.poo.ac.ordem.testes.TesteAbstrato;
-import br.edu.cs.poo.ac.ordem.testes.ComparadoraObjetosSerial;
-
 
 public class TesteDAOOrdemServico extends TesteAbstrato {
     private static final Cliente CLI = new Cliente("12345678901234", "ACME CO", null, LocalDate.now());
@@ -37,7 +35,7 @@ public class TesteDAOOrdemServico extends TesteAbstrato {
             dao.incluir(ORDEM);
             Assertions.fail();
         } catch (ExcecaoObjetoJaExistente e) {
-            Assertions.assertEquals("OrdemServico j� existente", e.getMessage());
+            Assertions.assertEquals("OrdemServico já existente", e.getMessage());
         }
         OrdemServico ordemBus = (OrdemServico)cadastro.buscar(NUMERO);
         Assertions.assertEquals(1, obterQuantidadeRegistros());
@@ -60,7 +58,7 @@ public class TesteDAOOrdemServico extends TesteAbstrato {
             dao.alterar(ORDEM);
             Assertions.fail();
         } catch (ExcecaoObjetoNaoExistente e) {
-            Assertions.assertEquals("OrdemServico n�o existente", e.getMessage());
+            Assertions.assertEquals("OrdemServico não existente", e.getMessage());
         }
         Assertions.assertEquals(0, obterQuantidadeRegistros());
         OrdemServico ordemBus = (OrdemServico)cadastro.buscar(NUMERO);
@@ -87,7 +85,7 @@ public class TesteDAOOrdemServico extends TesteAbstrato {
             dao.excluir(NUMERO);
             Assertions.fail();
         } catch (ExcecaoObjetoNaoExistente e) {
-            Assertions.assertEquals("OrdemServico n�o existente", e.getMessage());
+            Assertions.assertEquals("OrdemServico não existente", e.getMessage());
         }
         Assertions.assertEquals(0, obterQuantidadeRegistros());
         OrdemServico ordemBus = (OrdemServico)cadastro.buscar(NUMERO);
