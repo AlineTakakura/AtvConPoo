@@ -2,6 +2,7 @@ package br.edu.cs.poo.ac.ordem.daos;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import br.edu.cesarschool.next.oo.persistenciaobjetos.CadastroObjetos;
@@ -57,10 +58,28 @@ public class DAORegistro<T extends Registro> {
         Serializable[] ret = cadastro.buscarTodos();
         List<T> list = new ArrayList<T>();
 
-        if (ret == null) return list;
-        for(int i = 0; i < ret.length; i++) {
-            list.add((T) ret[i]);
+        if (ret == null || ret.length == 0) {
+            return list;
         }
+
+        // CRÍTICO: Ordenar os IDs ALFABETICAMENTE antes de buscar
+        String[] ids = new String[ret.length];
+        for (int i = 0; i < ret.length; i++) {
+            T obj = (T) ret[i];
+            ids[i] = obj.getId();
+        }
+
+        // Ordenação alfabética simples (como String)
+        Arrays.sort(ids);
+
+        // Buscar na ordem correta
+        for (int i = 0; i < ids.length; i++) {
+            T obj = buscar(ids[i]);
+            if (obj != null) {
+                list.add(obj);
+            }
+        }
+
         return list;
     }
 }
